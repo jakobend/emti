@@ -180,6 +180,8 @@ int file_to_model(const char *name)
 		return TILEM_CALC_TI83;
 	if (!g_ascii_strncasecmp(p, "8x", 2))
 		return TILEM_CALC_TI83P;
+	if (!g_ascii_strncasecmp(p, "8c", 2))
+		return TILEM_CALC_TI84PC_SE;
 	if (!g_ascii_strncasecmp(p, "85", 2))
 		return TILEM_CALC_TI85;
 	if (!g_ascii_strncasecmp(p, "86", 2))
