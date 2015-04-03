@@ -2,7 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2010-2011 Thibault Duponchelle
- * Copyright (c) 2010-2012 Benjamin Moody
+ * Copyright (c) 2010-2014 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -32,6 +32,9 @@
 #include "gui.h"
 #include "files.h"
 #include "msgbox.h"
+
+/* Zoom mode settings */
+enum { ZMODE_64, ZMODE_240 };
 
 /* Set size hints for the toplevel window */
 static void set_size_hints(GtkWidget *widget, gpointer data)
@@ -234,10 +237,10 @@ static void skin_size_allocate(GtkWidget *widget, GtkAllocation *alloc,
 	gtk_layout_move(GTK_LAYOUT(widget), ewin->lcd,
 	                lcdleft, lcdtop);
 
-	ewin->zoom_factor = r / ewin->base_zoom;
+	ewin->zoom_factor[ewin->zoom_mode] = r / ewin->base_zoom;
 
-	if (ewin->zoom_factor <= 1.0)
-		ewin->zoom_factor = 1.0;
+	if (ewin->zoom_factor[ewin->zoom_mode] <= 1.0)
+		ewin->zoom_factor[ewin->zoom_mode] = 1.0;
 }
 
 static void noskin_size_allocate(G_GNUC_UNUSED GtkWidget *widget,
@@ -245,6 +248,7 @@ static void noskin_size_allocate(G_GNUC_UNUSED GtkWidget *widget,
 {
 	TilemEmulatorWindow *ewin = data;
 	int lcdwidth, lcdheight;
+	gdouble z;
 
 	g_return_if_fail(ewin->emu->calc != NULL);
 
@@ -252,12 +256,10 @@ static void noskin_size_allocate(G_GNUC_UNUSED GtkWidget *widget,
 	lcdheight = ewin->emu->calc->hw.lcdheight;
 
 	if (alloc->width > alloc->height)
-		ewin->zoom_factor = (gdouble) alloc->width / lcdwidth;
+		z = (gdouble) alloc->width / lcdwidth;
 	else
-		ewin->zoom_factor = (gdouble) alloc->height / lcdheight;
-
-	if (ewin->zoom_factor <= 1.0)
-		ewin->zoom_factor = 1.0;
+		z = (gdouble) alloc->height / lcdheight;
+	ewin->zoom_factor[ewin->zoom_mode] = MAX(z, 1.0);
 }
 
 /* Used when you load another skin */
@@ -355,8 +357,10 @@ void redraw_screen(TilemEmulatorWindow *ewin)
 		ewin->base_zoom = 1.0;
 	}
 
-	curwidth = defwidth * ewin->base_zoom * ewin->zoom_factor + 0.5;
-	curheight = defheight * ewin->base_zoom * ewin->zoom_factor + 0.5;
+	curwidth = (defwidth * ewin->base_zoom
+	            * ewin->zoom_factor[ewin->zoom_mode]) + 0.5;
+	curheight = (defheight * ewin->base_zoom
+	             * ewin->zoom_factor[ewin->zoom_mode]) + 0.5;
 
 	gtk_widget_set_can_focus(emuwin, TRUE);
 
@@ -432,7 +436,8 @@ static void window_destroy(G_GNUC_UNUSED GtkWidget *w, gpointer data)
 
 	if (!window_maximized(ewin))
 		tilem_config_set("settings",
-		                 "zoom/r", ewin->zoom_factor,
+		                 "zoom/r", ewin->zoom_factor[ZMODE_64],
+		                 "zoom_240/r", ewin->zoom_factor[ZMODE_240],
 		                 NULL);
 
 	ewin->window = ewin->layout = ewin->lcd = ewin->background = NULL;
@@ -450,11 +455,14 @@ TilemEmulatorWindow *tilem_emulator_window_new(TilemCalcEmulator *emu)
 	tilem_config_get("settings",
 	                 "skin_disabled/b", &ewin->skin_disabled,
 	                 "smooth_scaling/b=1", &ewin->lcd_smooth_scale,
-	                 "zoom/r=2.0", &ewin->zoom_factor,
+	                 "zoom/r=2.0", &ewin->zoom_factor[ZMODE_64],
+	                 "zoom_240/r=1.0", &ewin->zoom_factor[ZMODE_240],
 	                 NULL);
 
-	if (ewin->zoom_factor <= 1.0)
-		ewin->zoom_factor = 1.0;
+	if (ewin->zoom_factor[ZMODE_64] <= 1.0)
+		ewin->zoom_factor[ZMODE_64] = 1.0;
+	if (ewin->zoom_factor[ZMODE_240] <= 1.0)
+		ewin->zoom_factor[ZMODE_240] = 1.0;
 
 	/* Create the window */
 	ewin->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -557,6 +565,11 @@ void tilem_emulator_window_calc_changed(TilemEmulatorWindow *ewin)
 		return;
 
 	model = ewin->emu->calc->hw.name;
+
+	if (ewin->emu->calc->hw.lcdheight >= 240)
+		ewin->zoom_mode = ZMODE_240;
+	else
+		ewin->zoom_mode = ZMODE_64;
 
 	tilem_config_get(model,
 	                 "skin/f", &name,
