@@ -1,8 +1,8 @@
 /*
  * libtilemcore - Graphing calculator emulation library
  *
- * Copyright (C) 2001, 2013 Solignac Julien
- * Copyright (C) 2004-2011 Benjamin Moody
+ * Copyright (C) 2001 Solignac Julien
+ * Copyright (C) 2004-2013 Benjamin Moody
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
