@@ -65,7 +65,7 @@ static const TilemFlashSector flashsectors[] = {
 	{0x3F0000, 0x02000, 0}, {0x3F2000, 0x02000, 0},
 	{0x3F4000, 0x02000, 0}, {0x3F6000, 0x02000, 0},
 	{0x3F8000, 0x02000, 0}, {0x3FA000, 0x02000, 0},
-	{0x3FC000, 0x04000, 2}};
+	{0x3FC000, 0x02000, 2}, {0x3FE000, 0x02000, 2}};
 
 #define NUM_FLASH_SECTORS (sizeof(flashsectors) / sizeof(TilemFlashSector))
 
