@@ -2,7 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2010-2011 Thibault Duponchelle
- * Copyright (c) 2010-2012 Benjamin Moody
+ * Copyright (c) 2010-2014 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -314,25 +314,30 @@ static void check_prog_slots_finished(TilemCalcEmulator *emu, gpointer data,
 
 #define PAT_TI81       "*.prg"
 #define PAT_TI73       "*.73?"
-#define PAT_TI73_NUM   "*.73n;*.73l;*.73m;*.73i"
+#define PAT_TI73_NUM   "*.73n;*.73l;*.73m"
 #define PAT_TI82       "*.82?"
-#define PAT_TI82_NUM   "*.82n;*.82l;*.82m;*.82i"
+#define PAT_TI82_NUM   "*.82n;*.82l;*.82m"
 #define PAT_TI82_TEXT  "*.82s;*.82y;*.82p"
 #define PAT_TI83       "*.83?"
-#define PAT_TI83_NUM   "*.83n;*.83l;*.83m;*.83i"
+#define PAT_TI83_NUM   "*.83n;*.83l;*.83m"
 #define PAT_TI83_TEXT  "*.83s;*.83y;*.83p"
 #define PAT_TI83P      "*.8x?;*.8xgrp"
-#define PAT_TI83P_NUM  "*.8xn;*.8xl;*.8xm;*.8xi"
+#define PAT_TI83P_NUM  "*.8xn;*.8xl;*.8xm"
 #define PAT_TI83P_TEXT "*.8xs;*.8xy;*.8xp"
+#define PAT_TI84PC     "*.8c?"
+#define PAT_TI83P_84PC "*.8c?;*.8xc;*.8xd;*.8xe;*.8xg;*.8xgrp;*.8xl;*.8xm;" \
+                       "*.8xn;*.8xo;*.8xp;*.8xs;*.8xt;*.8xv;*.8xw;*.8xy;*.8xz"
 #define PAT_TI85       "*.85?"
 #define PAT_TI86       "*.86?"
 #define PAT_TIG        "*.tig"
+#define PAT_PIC_96x63  "*.73i;*.82i;*.83i;*.8xi"
 
 #define FLT_TI81       _("TI-81 programs"), PAT_TI81
 #define FLT_TI73       _("TI-73 files"), PAT_TI73
 #define FLT_TI82       _("TI-82 files"), PAT_TI82
 #define FLT_TI83       _("TI-83 files"), PAT_TI83
 #define FLT_TI83P      _("TI-83 Plus files"), PAT_TI83P
+#define FLT_TI84PC     _("TI-84 Plus CSE files"), PAT_TI84PC
 #define FLT_TI85       _("TI-85 files"), PAT_TI85
 #define FLT_TI86       _("TI-86 files"), PAT_TI86
 #define FLT_TIG        _("TIGroup files"), PAT_TIG
@@ -343,19 +348,28 @@ static void check_prog_slots_finished(TilemCalcEmulator *emu, gpointer data,
 #define FLT_TI73_COMPAT    DESC_COMPAT, (PAT_TI73 ";" PAT_TIG ";" \
                                          PAT_TI82_NUM ";" \
                                          PAT_TI83_NUM ";" \
-                                         PAT_TI83P_NUM)
+                                         PAT_TI83P_NUM ";" \
+                                         PAT_PIC_96x63)
 
 #define FLT_TI82_COMPAT    DESC_COMPAT, (PAT_TI82 ";" PAT_TIG ";" \
                                          PAT_TI83_TEXT ";" PAT_TI83_NUM ";" \
                                          PAT_TI83P_TEXT ";" PAT_TI83P_NUM ";" \
-                                         PAT_TI73_NUM)
+                                         PAT_TI73_NUM ";" \
+                                         PAT_PIC_96x63)
 
 #define FLT_TI83_COMPAT    DESC_COMPAT, (PAT_TI83 ";" PAT_TIG ";" \
                                          PAT_TI82_TEXT ";" PAT_TI82_NUM ";" \
                                          PAT_TI83P_TEXT ";" PAT_TI83P_NUM ";" \
-                                         PAT_TI73_NUM)
+                                         PAT_TI73_NUM ";" \
+                                         PAT_PIC_96x63)
 
 #define FLT_TI83P_COMPAT   DESC_COMPAT, (PAT_TI83P ";" PAT_TIG ";" \
+                                         PAT_TI82_TEXT ";" PAT_TI82_NUM ";" \
+                                         PAT_TI83_TEXT ";" PAT_TI83_NUM ";" \
+                                         PAT_TI73_NUM ";" \
+                                         PAT_PIC_96x63)
+
+#define FLT_TI84PC_COMPAT  DESC_COMPAT, (PAT_TI83P_84PC ";" PAT_TIG ";" \
                                          PAT_TI82_TEXT ";" PAT_TI82_NUM ";" \
                                          PAT_TI83_TEXT ";" PAT_TI83_NUM ";" \
                                          PAT_TI73_NUM)
@@ -396,6 +410,11 @@ static char ** prompt_link_files(const char *title,
 		                         FLT_TI83P_COMPAT, FLT_TI73,
 		                         FLT_TI82, FLT_TI83, FLT_TI83P,
 		                         FLT_TIG, FLT_ALL, NULL);
+	case TILEM_CALC_TI84PC_SE:
+		return prompt_open_files(title, parent, dir,
+		                         FLT_TI84PC_COMPAT, FLT_TI73,
+		                         FLT_TI82, FLT_TI83, FLT_TI83P,
+		                         FLT_TI84PC, FLT_TIG, FLT_ALL, NULL);
 	case TILEM_CALC_TI85:
 	case TILEM_CALC_TI86:
 		return prompt_open_files(title, parent, dir,
