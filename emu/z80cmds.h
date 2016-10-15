@@ -1,7 +1,7 @@
 /*
  * libtilemcore - Graphing calculator emulation library
  *
- * Copyright (C) 2009-2011 Benjamin Moody
+ * Copyright (C) 2009-2016 Benjamin Moody
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -184,8 +184,8 @@
 
 
 #define add16(dst, src) do {						\
-		dword arg1 = (dst);					\
-		dword arg2 = (src);					\
+		dword arg1 = (word) (dst); 				\
+		dword arg2 = (word) (src); 				\
 		dword res = arg1 + arg2;				\
 		F = ((F & (FLAG_S | FLAG_Z | FLAG_P))			\
 		     | ((res >> 8) & FLAG_XY)		     /* X/Y */	\
@@ -195,8 +195,8 @@
 	} while (0)
 
 #define adc16(dst, src) do {						\
-		dword arg1 = (dst);					\
-		dword arg2 = (src);					\
+		dword arg1 = (word) (dst);				\
+		dword arg2 = (word) (src);				\
 		dword res = arg1 + arg2 + (F & 1);			\
 		word resw = res;					\
 		F = (((res >> 8) & FLAG_SXY)		     /* S/X/Y */\
@@ -208,8 +208,8 @@
 	} while (0)
 
 #define sbc16(dst, src) do {						\
-		dword arg1 = (dst);					\
-		dword arg2 = (src);					\
+		dword arg1 = (word) (dst);				\
+		dword arg2 = (word) (src);				\
 		dword res = arg1 - arg2 - (F & 1);			\
 		word resw = res;					\
 		F = (((res >> 8) & FLAG_SXY)		     /* S/X/Y */\
