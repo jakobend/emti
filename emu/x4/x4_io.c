@@ -275,7 +275,7 @@ byte x4_z80_in(TilemCalc* calc, dword port)
 			curtime = 0;
 		}
 		curtime += calc->hwregs[CLOCK_DIFF];
-		return (curtime >> ((port - 0x45) * 8));
+		return (curtime >> (((port & 0xff) - 0x45) * 8));
 
 	case 0x4C:
 		return(0x22);
