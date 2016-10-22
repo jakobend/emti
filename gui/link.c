@@ -180,7 +180,7 @@ static void run_with_key(TilemCalcEmulator* emu, int key)
 {
 	tilem_em_delay(emu, 50000, TRUE);
 	tilem_keypad_press_key(emu->calc, key);
-	tilem_em_delay(emu, 50000, TRUE);
+	tilem_em_delay(emu, 100000, TRUE);
 	tilem_keypad_release_key(emu->calc, key);
 	tilem_em_delay(emu, 50000, TRUE);
 }
@@ -499,8 +499,10 @@ static gboolean send_file_linkport(TilemCalcEmulator *emu, struct TilemSendFileI
 			mode = (sf->last ? MODE_SEND_LAST_VAR : MODE_NORMAL);
 			e = ticalcs_calc_send_var(ch, mode, filec);
 			end_link(emu, cbl, ch);
+			tifiles_content_delete_regular(filec);
 		}
-		tifiles_content_delete_regular(filec);
+		/* tifiles_file_read_regular frees the content
+		   structure when an error occurs. */
 		break;
 
 	case TIFILE_BACKUP:
@@ -511,8 +513,10 @@ static gboolean send_file_linkport(TilemCalcEmulator *emu, struct TilemSendFileI
 			prepare_for_link_send(emu);
 			e = ticalcs_calc_send_backup(ch, backupc);
 			end_link(emu, cbl, ch);
+			tifiles_content_delete_backup(backupc);
 		}
-		tifiles_content_delete_backup(backupc);
+		/* tifiles_file_read_backup frees the content
+		   structure when an error occurs. */
 		break;
 
 	case TIFILE_FLASH:
@@ -533,8 +537,10 @@ static gboolean send_file_linkport(TilemCalcEmulator *emu, struct TilemSendFileI
 			else
 				e = ticalcs_calc_send_cert(ch, flashc);
 			end_link(emu, cbl, ch);
+			tifiles_content_delete_flash(flashc);
 		}
-		tifiles_content_delete_flash(flashc);
+		/* tifiles_file_read_flash frees the content structure
+		   when an error occurs. */
 		break;
 
 	case TIFILE_TIGROUP:
