@@ -16,7 +16,8 @@ written by Hans Dinsen-Hansen and Michael A. Mayer.
 
 Thanks to Claude Clerc for the photo of his TI-83 Plus, and to Danilo
 Šegan for the photo of his TI-86, which we have used as skins.  Thanks
-to Scott Zeid for the design of the program icon.
+to Scott Zeid for the design of the program icon. Thanks to Olivier 
+Jeulin for his TI-85 skin.
 
 TilEm uses the TiLP libraries (libticalcs2, libticables2, libtifiles2,
 and libticonv) to send and receive variables.  Thanks are due to the
