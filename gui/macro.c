@@ -135,7 +135,7 @@ void tilem_macro_write_file(TilemCalcEmulator *emu) {
 					char * lengthchar = g_new0(char, 4);
 					int length = strlen(emu->macro->actions[i]->value);
 					fwrite("file=", 1, 5, fp);
-					sprintf(lengthchar, "%04d", strlen(emu->macro->actions[i]->value));
+					sprintf(lengthchar, "%04zd", strlen(emu->macro->actions[i]->value));
 					fwrite(lengthchar, 1, sizeof(int), fp);
 					fwrite("-", 1, 1, fp);
 					fwrite(emu->macro->actions[i]->value, 1, length, fp);
