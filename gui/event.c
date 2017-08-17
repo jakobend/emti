@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2011 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2010-2012 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -141,13 +141,13 @@ static void get_device_pointer(GdkWindow *win, GdkDevice *dev,
 	gdouble *axes;
 	int i;
 
-	axes = g_new(gdouble, dev->num_axes);
+	axes = g_new(gdouble, gdk_device_get_n_axes(dev));
 	gdk_device_get_state(dev, win, axes, mask);
 
-	for (i = 0; i < dev->num_axes; i++) {
-		if (x && dev->axes[i].use == GDK_AXIS_X)
+	for (i = 0; i < gdk_device_get_n_axes(dev); i++) {
+		if (x && gdk_device_get_axis_use(dev, i) == GDK_AXIS_X)
 			*x = axes[i];
-		else if (y && dev->axes[i].use == GDK_AXIS_Y)
+		else if (y && gdk_device_get_axis_use(dev, i) == GDK_AXIS_Y)
 			*y = axes[i];
 	}
 
