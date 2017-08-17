@@ -2,6 +2,7 @@
  *   skinedit - a skin editor for the TiEmu emulator
  *   Copyright (C) 2002 Julien BLACHE <jb@tilp.info>
  *   Copyright (C) 2012 Benjamin Moody
+ *   Copyright (C) 2017 Thibault Duponchelle
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License
@@ -63,7 +64,10 @@ int skin_get_type(SKIN_INFOS *si, const char *filename)
 	}
 
 	memset(str, 0, sizeof(str));
-	fread(str, 16, 1, fp);
+	if(!fread(str, 16, 1, fp)) { 
+		fprintf(stderr, _("Bad skin format\n"));
+		return -1;
+	}
 
 	if(!strncmp(str, "TiEmu v2.00", 16))
 		si->type = SKIN_TYPE_TIEMU;
@@ -93,19 +97,25 @@ int skin_read_header(SKIN_INFOS *si, FILE *fp)
 	char str[17];
 
 	/* signature & offsets */
-	fread(str, 16, 1, fp);
+	if(!fread(str, 16, 1, fp))
+		return -1;
+
 	if ((strncmp(str, "TilEm v2.00", 16))
 	    && (strncmp(str, "TiEmu v2.00", 16))) {
 		return -1;
 	}
-	fread(&endian, 4, 1, fp);
-	fread(&jpeg_offset, 4, 1, fp);
+	if(!fread(&endian, 4, 1, fp)) 
+		return -1;
+	if(!fread(&jpeg_offset, 4, 1, fp)) 
+		return -1;
 
 	if (endian != ENDIANNESS_FLAG)
 		jpeg_offset = GUINT32_SWAP_LE_BE(jpeg_offset);
 
 	/* Skin name */
-	fread(&length, 4, 1, fp);
+	if(!fread(&length, 4, 1, fp)) 
+		return -1;
+
 	if (endian != ENDIANNESS_FLAG)
 		length = GUINT32_SWAP_LE_BE(length);
 
@@ -115,11 +125,13 @@ int skin_read_header(SKIN_INFOS *si, FILE *fp)
 			return -1;
 
 		memset(si->name, 0, length + 1);
-		fread(si->name, length, 1, fp);
+		if(!fread(si->name, length, 1, fp)) 
+			return -1;
 	}
 
 	/* Skin author */
-	fread(&length, 4, 1, fp);
+	if(!fread(&length, 4, 1, fp))
+		return -1;
 	if (endian != ENDIANNESS_FLAG)
 		length = GUINT32_SWAP_LE_BE(length);
 
@@ -129,25 +141,33 @@ int skin_read_header(SKIN_INFOS *si, FILE *fp)
 			return -1;
 
 		memset(si->author, 0, length + 1);
-		fread(si->author, length, 1, fp);
+		if(!fread(si->author, length, 1, fp))
+			return -1;
 	}
 
 	/* LCD colors */
-	fread(&si->colortype, 4, 1, fp);
-	fread(&si->lcd_white, 4, 1, fp);
-	fread(&si->lcd_black, 4, 1, fp);
+	if(!fread(&si->colortype, 4, 1, fp) ||
+	   !fread(&si->lcd_white, 4, 1, fp) ||
+	   !fread(&si->lcd_black, 4, 1, fp)) {
+		return -1;
+	}
+
 
 	/* Calc type */
-	fread(si->calc, 8, 1, fp);
+	if(!fread(si->calc, 8, 1, fp))
+		return -1;
 
 	/* LCD position */
-	fread(&si->lcd_pos.left, 4, 1, fp);
-	fread(&si->lcd_pos.top, 4, 1, fp);
-	fread(&si->lcd_pos.right, 4, 1, fp);
-	fread(&si->lcd_pos.bottom, 4, 1, fp);
+	if(!fread(&si->lcd_pos.left, 4, 1, fp) || 
+	   !fread(&si->lcd_pos.top, 4, 1, fp) ||
+	   !fread(&si->lcd_pos.right, 4, 1, fp) ||
+	   !fread(&si->lcd_pos.bottom, 4, 1, fp)) {
+		return -1;
+	}
 
 	/* Number of RECT struct to read */
-	fread(&length, 4, 1, fp);
+	if(!fread(&length, 4, 1, fp))
+		return -1;
 	if (endian != ENDIANNESS_FLAG)
 		length = GUINT32_SWAP_LE_BE(length);
 
@@ -155,10 +175,12 @@ int skin_read_header(SKIN_INFOS *si, FILE *fp)
 		return -1;
 
 	for (i = 0; i < (int)length; i++) {
-		fread(&si->keys_pos[i].left, 4, 1, fp);
-		fread(&si->keys_pos[i].top, 4, 1, fp);
-		fread(&si->keys_pos[i].right, 4, 1, fp);
-		fread(&si->keys_pos[i].bottom, 4, 1, fp);
+		if(!fread(&si->keys_pos[i].left, 4, 1, fp) ||
+		   !fread(&si->keys_pos[i].top, 4, 1, fp) ||
+		   !fread(&si->keys_pos[i].right, 4, 1, fp) ||
+		   !fread(&si->keys_pos[i].bottom, 4, 1, fp)) {
+			return -1;
+		}
 	}
 
 	if (endian != ENDIANNESS_FLAG) {

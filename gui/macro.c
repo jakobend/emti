@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2012 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2012 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -216,15 +216,24 @@ static gboolean tilem_macro_load_main(TilemCalcEmulator* emu, gpointer data) {
 		tilem_macro_start(emu);	
 		while(c != EOF) {	
 			char* codechar = g_new0(char, 4);
-			fread(codechar, 1, 4, fp);
+			if(!fread(codechar, 1, 4, fp))
+				break;
 			if(strcmp(codechar, "file") == 0) {
 				c = fgetc(fp); /* Drop the "="*/
 				char *lengthchar = g_new0(char, 4);
-				fread(lengthchar, 1, 4, fp);
+				if(!fread(lengthchar, 1, 4, fp)) {
+					g_free(lengthchar);
+					break;
+				}
+					
 				c = fgetc(fp); /* Drop the "-"*/
 				int length = atoi(lengthchar);
 				char* filetoload= g_new0(char, length);
-				fread(filetoload, 1, length, fp);
+				if(!fread(filetoload, 1, length, fp)) {
+					g_free(lengthchar);
+					g_free(filetoload);
+					break;
+				}
 				tilem_macro_add_action(emu->macro, 1, filetoload);	
 				g_free(lengthchar);
 				g_free(filetoload);
