@@ -447,9 +447,9 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 0, 1,
 	                 GTK_FILL, GTK_FILL, 0, 0);
 
-	combo = gtk_combo_box_new_text();
+	combo = gtk_combo_box_text_new();
 	for (i = 0; i < G_N_ELEMENTS(type_info); i++)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _(type_info[i].desc));
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX(combo), _(type_info[i].desc));
 
 	bpdlg.type_combo = combo;
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), combo);

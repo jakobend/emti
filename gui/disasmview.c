@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011-2012 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -549,9 +550,11 @@ static gboolean get_cursor_line(TilemDisasmView *dv, dword *pos,
    we've inserted into the model) */
 static int get_parent_request_height(GtkWidget *w)
 {
-	GtkRequisition req;
-	(*GTK_WIDGET_CLASS(parent_class)->size_request)(w, &req);
-	return req.height;
+	GtkRequisition* min_req;
+	GtkRequisition* nat_req;
+	//(*GTK_WIDGET_CLASS(parent_class)->size_request)(w, &req);
+	gtk_widget_get_preferred_size(w, min_req, nat_req);
+	return nat_req->height;
 }
 
 /* Widget is assigned a size and position */
@@ -609,8 +612,9 @@ static void tilem_disasm_view_size_allocate(GtkWidget *w,
 /* Get widget's desired size */
 static void tilem_disasm_view_size_request(GtkWidget *w, GtkRequisition *req)
 {
-	(*GTK_WIDGET_CLASS(parent_class)->size_request)(w, req);
-	req->height = 100;	/* ignore requested height */
+	//(*GTK_WIDGET_CLASS(parent_class)->size_request)(w, req);
+	gtk_widget_set_size_request(w, -1, 100);
+	//w->req->height = 100;	/* ignore requested height */
 }
 
 /* Widget style set */
@@ -922,7 +926,7 @@ static void place_menu(GtkMenu *menu, gint *x, gint *y,
 		*y += rect.y + rect.height;
 	}
 
-	screen = gdk_drawable_get_screen(win);
+	screen = gdk_window_get_screen(win);
 	n = gdk_screen_get_monitor_at_point(screen, *x, *y);
 	gtk_menu_set_monitor(menu, n);
 
@@ -1101,7 +1105,7 @@ static void tilem_disasm_view_class_init(TilemDisasmViewClass *klass)
 	parent_class = g_type_class_peek_parent(klass);
 
 	widget_class->style_set = &tilem_disasm_view_style_set;
-	widget_class->size_request = &tilem_disasm_view_size_request;
+	//widget_class->size_request = &tilem_disasm_view_size_request;
 	widget_class->size_allocate = &tilem_disasm_view_size_allocate;
 	widget_class->button_press_event = &tilem_disasm_view_button_press;
 	widget_class->popup_menu = &tilem_disasm_view_popup_menu;

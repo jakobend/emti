@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011-2012 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -91,7 +92,7 @@ void fixed_tree_view_init_with_template(GtkWidget *treeview,
 	}
 	g_object_set_data(G_OBJECT(treeview), "ftv-template", template);
 
-	if (template && GTK_WIDGET_REALIZED(treeview))
+	if (template && gtk_widget_get_realized(treeview))
 		ftv_style_set(treeview, NULL, NULL);
 }
 

@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2012 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -258,12 +259,12 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 	gtk_table_attach(GTK_TABLE(lsdlg.tbl), lbl, 0, 1, 0, 1,
 	                 GTK_FILL, GTK_FILL, 0, 0);
 
-	type_combo = gtk_combo_box_new_text();
+	type_combo = gtk_combo_box_text_new();
 	for (i = j = 0; i < (int) G_N_ELEMENTS(cable_types); i++) {
 		if (!cable_supported(cable_types[i].model))
 			continue;
 
-		gtk_combo_box_append_text(GTK_COMBO_BOX(type_combo),
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX(type_combo),
 		                          _(cable_types[i].description));
 
 		lsdlg.models[j] = cable_types[i].model;

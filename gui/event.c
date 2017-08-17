@@ -289,7 +289,7 @@ static TilemKeyBinding* find_key_binding(TilemCalcEmulator* emu,
 	GdkModifierType consumed, mods;
 	TilemKeyBinding *kb;
 
-	dpy = gdk_drawable_get_display(event->window);
+	dpy = gdk_window_get_display(event->window);
 	km = gdk_keymap_get_for_display(dpy);
 
 	/* determine the relevant set of modifiers */
@@ -404,7 +404,7 @@ static void place_menu(GtkMenu *menu, gint *x, gint *y,
 	win = gtk_widget_get_window(w);
 	gdk_window_get_origin(win, x, y);
 
-	screen = gdk_drawable_get_screen(win);
+	screen = gdk_window_get_screen(win);
 	n = gdk_screen_get_monitor_at_point(screen, *x, *y);
 	gtk_menu_set_monitor(menu, n);
 

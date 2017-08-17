@@ -473,7 +473,7 @@ int main(int argc, char **argv)
 	else
 		tilem_calc_emulator_run(emu);
 
-  g_signal_connect(emu->ewin->window, "delete_event",
+	g_signal_connect(emu->ewin->window, "delete_event",
                         G_CALLBACK(delete_event), emu->ewin);
     
 	g_signal_connect(emu->ewin->window, "destroy",

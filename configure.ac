@@ -17,6 +17,8 @@ if test "x$GCC" = "xyes" ; then
   fi
 fi
 
+#CFLAGS+=" -w"
+
 AC_CHECK_TOOL(AR, [ar], [false])
 AC_ARG_VAR(AR, [Static library archiver])
 AC_ARG_VAR(AR_FLAGS, [Flags to pass to ar to build a static library])
@@ -49,7 +51,7 @@ m4_define(with_flags, [
 
 # GLib and GTK+
 
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6.0
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.0
                        glib-2.0 >= 2.12.0
                        gthread-2.0)
 

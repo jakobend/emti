@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2011 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2011-2013 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -588,9 +588,9 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 	gtk_table_attach(GTK_TABLE(tbl), lbl,
 	                 0, 1, 5, 7, GTK_FILL, GTK_FILL, 0, 0);
 
-	ssdlg->dither_mode_combo = gtk_combo_box_new_text();
+	ssdlg->dither_mode_combo = gtk_combo_box_text_new();
 	for (i = 0; i < G_N_ELEMENTS(dither_modes); i++)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(ssdlg->dither_mode_combo),
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX(ssdlg->dither_mode_combo),
 		                          _(dither_modes[i].desc));
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->dither_mode_combo);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);

@@ -71,6 +71,40 @@ static gboolean window_maximized(TilemEmulatorWindow *ewin)
 	                              | GDK_WINDOW_STATE_FULLSCREEN));
 }
 
+static void
+put_pixel (GdkPixbuf *pixbuf, int x, int y, gboolean pixel_is_on)
+{
+	int width, height, rowstride, n_channels;
+	guchar *pixels, *p;
+
+	n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+
+	g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+	g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+	g_assert (n_channels == 3);
+
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+
+	g_assert (x >= 0 && x < width);
+	g_assert (y >= 0 && y < height);
+
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+	p = pixels + y * rowstride + x * n_channels;
+	if(pixel_is_on) {
+		p[0] = 0;
+		p[1] = 0;
+		p[2] = 0;
+	} else {
+		p[0] = 255;
+		p[1] = 255;
+		p[2] = 255;
+	}
+		
+}
+
 static gboolean screen_repaint(GtkWidget *w, GdkEventExpose *ev G_GNUC_UNUSED,
                                TilemEmulatorWindow *ewin)
 {
@@ -122,19 +156,42 @@ static gboolean screen_repaint(GtkWidget *w, GdkEventExpose *ev G_GNUC_UNUSED,
 	/* Render buffer to the screen */
 
 	win = gtk_widget_get_window(w);
-	style = gtk_widget_get_style(w);
+	cairo_t* cr = gdk_cairo_create(win);
+	//style = gtk_widget_get_style(w);
+	//GdkPixbuf* pixbuf = gdk_pixbuf_new_from_bytes(ewin->lcd_image_buf, GDK_COLORSPACE_RGB, FALSE, 8, alloc.width, alloc.height, alloc.width * 3);
+	GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, alloc.width, alloc.height);
+	int x, y;
+	for(y = 0; y < alloc.height; y++) {
+		for(x = 0; x < alloc.width; x++) {
+			if(ewin->lcd_image_buf[(y*alloc.width)+x] > 128) {
+				put_pixel(pixbuf, x, y, TRUE);
+			} else {
+				put_pixel(pixbuf, x, y, FALSE);
+			}
+		}
+	}
+	
+	
+	gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
+	cairo_paint(cr);
+	//cairo_destroy(cr);
 
-	if (drawrgb)
-		gdk_draw_rgb_image(win, style->fg_gc[GTK_STATE_NORMAL], 0, 0,
-		                   alloc.width, alloc.height,
-		                   GDK_RGB_DITHER_NORMAL,
-		                   ewin->lcd_image_buf, alloc.width * 3);
-	else
-		gdk_draw_indexed_image(win, style->fg_gc[GTK_STATE_NORMAL],
-		                       0, 0, alloc.width, alloc.height,
-		                       GDK_RGB_DITHER_NONE,
-		                       ewin->lcd_image_buf, alloc.width,
-		                       ewin->lcd_cmap);
+	if (drawrgb) {
+		//gdk_cairo_set_source_pixbuf(cr, ewin->lcd_image_buf, 0, 0);
+		//cairo_paint(cr);
+		//gdk_draw_rgb_image(win, style->fg_gc[GTK_STATE_NORMAL], 0, 0,
+		//                   alloc.width, alloc.height,
+		//                   GDK_RGB_DITHER_NORMAL,
+		//                   ewin->lcd_image_buf, alloc.width * 3);
+	} else {
+		//gdk_cairo_set_source_pixbuf(cr, ewin->lcd_image_buf, 0, 0);
+		//cairo_paint(cr);
+		//gdk_draw_indexed_image(win, style->fg_gc[GTK_STATE_NORMAL],
+		//                       0, 0, alloc.width, alloc.height,
+		//                       GDK_RGB_DITHER_NONE,
+		//                       ewin->lcd_image_buf, alloc.width,
+		//                       ewin->lcd_cmap);
+	}
 
 	return TRUE;
 }
@@ -176,12 +233,12 @@ static void screen_restyle(GtkWidget* w, GtkStyle* oldstyle G_GNUC_UNUSED,
 
 	/* Generate a new palette, and convert it into GDK format */
 
-	if (ewin->lcd_cmap)
-		gdk_rgb_cmap_free(ewin->lcd_cmap);
+	//if (ewin->lcd_cmap)
+	//	gdk_rgb_cmap_free(ewin->lcd_cmap);
 
 	palette = tilem_color_palette_new(r_light, g_light, b_light,
 					  r_dark, g_dark, b_dark, gamma);
-	ewin->lcd_cmap = gdk_rgb_cmap_new(palette, 256);
+	//ewin->lcd_cmap = gdk_rgb_cmap_new(palette, 256);
 	tilem_free(palette);
 
 	gtk_widget_queue_draw(ewin->lcd);
@@ -371,7 +428,7 @@ void redraw_screen(TilemEmulatorWindow *ewin)
 				       | GDK_DROP_FINISHED
 				       | GDK_DRAG_MOTION));
 
-	g_signal_connect(ewin->lcd, "expose-event",
+	g_signal_connect(ewin->lcd, "draw",
 	                 G_CALLBACK(screen_repaint), ewin);
 	g_signal_connect(ewin->lcd, "style-set",
 	                 G_CALLBACK(screen_restyle), ewin);
@@ -517,8 +574,8 @@ void tilem_emulator_window_free(TilemEmulatorWindow *ewin)
 		g_free(ewin->skin);
 	}
 
-	if (ewin->lcd_cmap)
-		gdk_rgb_cmap_free(ewin->lcd_cmap);
+	//if (ewin->lcd_cmap)
+	//	gdk_rgb_cmap_free(ewin->lcd_cmap);
 
 	g_slice_free(TilemEmulatorWindow, ewin);
 }

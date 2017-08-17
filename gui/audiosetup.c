@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2012 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -129,7 +130,7 @@ static void channels_changed(GtkSpinButton *sb, void *data)
 	asdlg->save_channels = TRUE;
 }
 
-static void driver_changed(GtkComboBox *cmb, void *data)
+static void driver_changed(GtkComboBoxText *cmb, void *data)
 {
 	struct audio_setup_dlg *asdlg = data;
 	TilemAudioOptions opts = asdlg->emu->audio_options;
@@ -138,7 +139,7 @@ static void driver_changed(GtkComboBox *cmb, void *data)
 		return;
 
 	if (gtk_combo_box_get_active(cmb) > 0)
-		opts.driver = gtk_combo_box_get_active_text(cmb);
+		opts.driver = gtk_combo_box_text_get_active_text(cmb);
 	else
 		opts.driver = NULL;
 	tilem_calc_emulator_set_audio_options(asdlg->emu, &opts);
@@ -227,15 +228,15 @@ void tilem_audio_setup_dialog(TilemEmulatorWindow *ewin)
 	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 2, 3,
 	                 GTK_FILL, GTK_FILL, 0, 0);
 
-	asdlg.driver_combo = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(asdlg.driver_combo),
+	asdlg.driver_combo = gtk_combo_box_text_new();
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX(asdlg.driver_combo),
 	                          _("Automatic"));
 	if (!ewin->emu->audio_options.driver)
 		gtk_combo_box_set_active(GTK_COMBO_BOX(asdlg.driver_combo), 0);
 
 	drivers = tilem_audio_device_list_drivers();
 	for (i = 0; drivers && drivers[i]; i++) {
-		gtk_combo_box_append_text(GTK_COMBO_BOX(asdlg.driver_combo),
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX(asdlg.driver_combo),
 		                          drivers[i]);
 
 		if (ewin->emu->audio_options.driver
