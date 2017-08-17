@@ -242,12 +242,12 @@ static void prepare_for_link_receive(TilemCalcEmulator *emu)
 
 /**************** Calc handle ****************/
 
-static GStaticPrivate current_emu_key = G_STATIC_PRIVATE_INIT;
+static GPrivate current_emu_key = G_PRIVATE_INIT(g_free); 
 
 /* ticalcs progress bar callback */
 static void pbar_do_update()
 {
-	TilemCalcEmulator *emu = g_static_private_get(&current_emu_key);
+	TilemCalcEmulator *emu = g_private_get(&current_emu_key);
 	CalcUpdate *upd = emu->link_update;
 	gdouble frac;
 
@@ -284,7 +284,7 @@ void begin_link(TilemCalcEmulator *emu, CableHandle **cbl, CalcHandle **ch,
 	emu->link_update->pbar = &pbar_do_update;
 	emu->link_update->label = &pbar_do_update;
 
-	g_static_private_set(&current_emu_key, emu, NULL);
+	g_private_set(&current_emu_key, emu);
 
 	tilem_em_set_progress_title(emu, title);
 

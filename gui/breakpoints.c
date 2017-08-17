@@ -87,10 +87,11 @@ static void hex_entry_set_value(struct hex_entry *he, TilemDebugger *dbg,
 	const TilemCalc *calc;
 	char buf[20], *str, *sep;
 
-	g_return_if_fail(dbg->emu != NULL);
-	g_return_if_fail(dbg->emu->calc != NULL);
-
 	calc = dbg->emu->calc;
+
+	g_return_if_fail(dbg->emu != NULL);
+	g_return_if_fail(calc != NULL);
+
 
 	switch (type) {
 	case TILEM_DB_BREAK_LOGICAL:
@@ -587,10 +588,11 @@ static void format_address(TilemDebugger *dbg,
 	const TilemCalc *calc;
 	char *str;
 
-	g_return_if_fail(dbg->emu != NULL);
-	g_return_if_fail(dbg->emu->calc != NULL);
-
 	calc = dbg->emu->calc;
+
+	g_return_if_fail(dbg->emu != NULL);
+	g_return_if_fail(calc != NULL);
+
 
 	switch (type) {
 	case TILEM_DB_BREAK_LOGICAL:

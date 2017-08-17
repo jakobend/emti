@@ -87,7 +87,7 @@ void tilem_macro_add_action(TilemMacro* macro, int type, char * value) {
 	macro->actions = tilem_macro_actions_new(macro, n + 1);
 
 	/* Then we need to save the action */	
-	macro->actions[n] =  g_new(char, strlen(value)); /* FIXME : gcc says : "assignment from incompatible pointer type" ??? */
+	macro->actions[n] =  (TilemMacroAtom*) g_new(char, strlen(value)); 
 	macro->actions[n]->value = g_strdup(value);
 	macro->actions[n]->type = type;
 	macro->n++;

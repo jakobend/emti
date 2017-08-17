@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2011 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2010-2014 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -652,8 +652,9 @@ void display_lcdimage_into_terminal(TilemEmulatorWindow *ewin)
 	/* Request user to know which char user wants */	
 	
 	printf("Which char to display FOR BLACK?\n");
-	scanf("%c", &c); /* Choose wich char for the black */	
-	
+	if(!scanf("%c", &c))  /* Choose wich char for the black */	
+		return;
+
 	//printf("Which char to display FOR GRAY ?\n");
 	//scanf("%c", &b); /* Choose wich char for the black */	
 	

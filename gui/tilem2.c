@@ -266,7 +266,6 @@ static int parse_link_cable(CableOptions *options, const char *str)
 
 static void autosave_changed(GtkToggleButton *btn, gpointer data)
 {
-	TilemEmulatorWindow *ewin = data;
 	gboolean enable = gtk_toggle_button_get_active(btn);
 
 	tilem_config_set("settings",
