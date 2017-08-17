@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011-2013 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -346,9 +347,9 @@ static gboolean entry_key_event(G_GNUC_UNUSED GtkWidget *entry,
 	if (ev->state & GDK_MODIFIER_MASK)
 		return FALSE;
 
-	if (ev->keyval != GDK_Return
-	    && ev->keyval != GDK_KP_Enter
-	    && ev->keyval != GDK_ISO_Enter)
+	if (ev->keyval != GDK_KEY_Return
+	    && ev->keyval != GDK_KEY_KP_Enter
+	    && ev->keyval != GDK_KEY_ISO_Enter)
 		return FALSE;
 
 	if (parse_input(bpdlg, &tmpbp))
