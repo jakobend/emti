@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2013 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2010-2012 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -266,6 +266,7 @@ static int parse_link_cable(CableOptions *options, const char *str)
 
 static void autosave_changed(GtkToggleButton *btn, gpointer data)
 {
+	TilemEmulatorWindow *ewin = data;
 	gboolean enable = gtk_toggle_button_get_active(btn);
 
 	tilem_config_set("settings",
