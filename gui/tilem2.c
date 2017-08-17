@@ -266,7 +266,7 @@ static int parse_link_cable(CableOptions *options, const char *str)
 
 static void autosave_changed(GtkToggleButton *btn, gpointer data)
 {
-	TilemEmulatorWindow *ewin = data;
+	(void) data;
 	gboolean enable = gtk_toggle_button_get_active(btn);
 
 	tilem_config_set("settings",
@@ -376,8 +376,6 @@ int main(int argc, char **argv)
 	GError *error = NULL;
 	int model = 0;
 	CableOptions cable_options;
-
-	g_thread_init(NULL);
 
 #ifdef ENABLE_NLS
 	setlocale(LC_ALL, "");

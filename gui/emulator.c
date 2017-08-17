@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011-2012 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -137,9 +138,12 @@ TilemCalcEmulator *tilem_calc_emulator_new()
 	double latency, volume;
 	char *driver;
 
-	emu->calc_mutex = g_mutex_new();
-	emu->calc_wakeup_cond = g_cond_new();
-	emu->lcd_mutex = g_mutex_new();
+	emu->calc_mutex = (GMutex*) g_new(GMutex*, 1);
+	g_mutex_init(emu->calc_mutex);
+	emu->calc_wakeup_cond = (GCond*) g_new(GCond*, 1);
+	g_cond_init(emu->calc_wakeup_cond);
+	emu->lcd_mutex = (GMutex*) g_new(GMutex*, 1);
+	g_mutex_init(emu->lcd_mutex);
 
 	tilem_config_get("emulation",
 	                 "grayscale/b=1", &emu->grayscale,
@@ -147,11 +151,13 @@ TilemCalcEmulator *tilem_calc_emulator_new()
 	                 NULL);
 
 	emu->task_queue = g_queue_new();
-	emu->task_finished_cond = g_cond_new();
+	emu->task_finished_cond = (GCond*) g_new(GCond*, 1);
+	g_cond_init(emu->task_finished_cond);
 
 	emu->timer = g_timer_new();
 
-	emu->pbar_mutex = g_mutex_new();
+	emu->pbar_mutex = (GMutex*) g_new(GMutex*, 1);
+	g_mutex_init(emu->pbar_mutex);
 
 	update = g_new0(CalcUpdate, 1);
 	update->start = &link_update_nop;
@@ -206,16 +212,16 @@ void tilem_calc_emulator_free(TilemCalcEmulator *emu)
 	g_free(emu->rom_file_name);
 	g_free(emu->state_file_name);
 
-	g_mutex_free(emu->calc_mutex);
-	g_mutex_free(emu->lcd_mutex);
-	g_cond_free(emu->calc_wakeup_cond);
+	g_mutex_clear(emu->calc_mutex);
+	g_mutex_clear(emu->lcd_mutex);
+	g_cond_clear(emu->calc_wakeup_cond);
 
-	g_cond_free(emu->task_finished_cond);
+	g_cond_clear(emu->task_finished_cond);
 	g_queue_free(emu->task_queue);
 
 	g_timer_destroy(emu->timer);
 
-	g_mutex_free(emu->pbar_mutex);
+	g_mutex_clear(emu->pbar_mutex);
 	g_free(emu->link_update);
 
 	g_free(emu->audio_options.driver);
@@ -626,7 +632,7 @@ void tilem_calc_emulator_run(TilemCalcEmulator *emu)
 	tilem_calc_emulator_unlock(emu);
 
 	if (!emu->z80_thread)
-		emu->z80_thread = g_thread_create(&tilem_em_main, emu, TRUE, NULL);
+		emu->z80_thread = g_thread_new("Emulator Main", &tilem_em_main, emu);
 }
 
 void tilem_calc_emulator_set_limit_speed(TilemCalcEmulator *emu,
