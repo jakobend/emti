@@ -116,7 +116,7 @@ TilemKeypadDialog *tilem_keypad_dialog_new(TilemDebugger *dbg)
 
 	kpdlg->window = gtk_dialog_new_with_buttons
 		(_("Keypad"), NULL, 0,
-		 GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+		 _("Close"), GTK_RESPONSE_CLOSE,
 		 NULL);
 
 	g_signal_connect(kpdlg->window, "delete-event",

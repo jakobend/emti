@@ -196,7 +196,7 @@ void tilem_audio_setup_dialog(TilemEmulatorWindow *ewin)
 	dlg = gtk_dialog_new_with_buttons(_("Audio Properties"),
 	                                  GTK_WINDOW(ewin->window),
 	                                  GTK_DIALOG_MODAL,
-	                                  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+	                                  _("Close"), GTK_RESPONSE_CLOSE,
 	                                  NULL);
 
 	tbl = gtk_table_new(5, 2, FALSE);

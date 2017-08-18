@@ -294,8 +294,8 @@ void popup_ask_save(TilemEmulatorWindow* ewin) {
     GtkWidget *dlg, *vbox, *lbl, *hbox, *chkbtn, *chklbl;
     dlg = gtk_dialog_new_with_buttons("Save before quit", GTK_WINDOW(ewin->window), 
                                       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                      GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
-                                      GTK_STOCK_NO, GTK_RESPONSE_REJECT, NULL);
+                                      _("Yes"), GTK_RESPONSE_ACCEPT,
+                                      _("No"), GTK_RESPONSE_REJECT, NULL);
     lbl = gtk_label_new("Save calculator state?");
     vbox = gtk_dialog_get_content_area(GTK_DIALOG(dlg));
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);

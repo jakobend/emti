@@ -421,8 +421,8 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 
 	dlg = gtk_dialog_new_with_buttons(title, parent_window,
 	                                  GTK_DIALOG_MODAL,
-	                                  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                  GTK_STOCK_OK, GTK_RESPONSE_OK,
+	                                  _("Cancel"), GTK_RESPONSE_CANCEL,
+	                                  _("OK"), GTK_RESPONSE_OK,
 	                                  NULL);
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dlg),
 	                                        GTK_RESPONSE_OK,
@@ -784,8 +784,8 @@ static void clear_clicked(G_GNUC_UNUSED GtkButton *btn, gpointer data)
 		 _("All existing breakpoints will be deleted and"
 		   " cannot be restored."));
 	gtk_dialog_add_buttons(GTK_DIALOG(dlg),
-	                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                       GTK_STOCK_CLEAR, GTK_RESPONSE_ACCEPT,
+	                       _("Cancel"), GTK_RESPONSE_CANCEL,
+	                       _("Clear"), GTK_RESPONSE_ACCEPT,
 	                       NULL);
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dlg),
 	                                        GTK_RESPONSE_ACCEPT,
@@ -875,7 +875,7 @@ void tilem_debugger_edit_breakpoints(TilemDebugger *dbg)
 	dlg = gtk_dialog_new_with_buttons(_("Breakpoints"),
 	                                  GTK_WINDOW(dbg->window),
 	                                  GTK_DIALOG_MODAL,
-	                                  GTK_STOCK_CLOSE,
+	                                  _("Close"),
 	                                  GTK_RESPONSE_ACCEPT,
 	                                  NULL);
 
@@ -978,24 +978,24 @@ void tilem_debugger_edit_breakpoints(TilemDebugger *dbg)
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing(GTK_BOX(bbox), 6);
 
-	btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	btn = gtk_button_new_with_label(_("Add"));
 	g_signal_connect(btn, "clicked",
 	                 G_CALLBACK(add_clicked), &bpldlg);
 	gtk_container_add(GTK_CONTAINER(bbox), btn);
 
-	btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	btn = gtk_button_new_with_label(_("Remove"));
 	g_signal_connect(btn, "clicked",
 	                 G_CALLBACK(remove_clicked), &bpldlg);
 	gtk_container_add(GTK_CONTAINER(bbox), btn);
 	bpldlg.remove_btn = btn;
 
-	btn = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	btn = gtk_button_new_with_label(_("Edit"));
 	g_signal_connect(btn, "clicked",
 	                 G_CALLBACK(edit_clicked), &bpldlg);
 	gtk_container_add(GTK_CONTAINER(bbox), btn);
 	bpldlg.edit_btn = btn;
 
-	btn = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
+	btn = gtk_button_new_with_label(_("Clear"));
 	g_signal_connect(btn, "clicked",
 	                 G_CALLBACK(clear_clicked), &bpldlg);
 	gtk_container_add(GTK_CONTAINER(bbox), btn);

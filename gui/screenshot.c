@@ -431,8 +431,8 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 		(_("Screenshot"),
 		 (emu->ewin ? GTK_WINDOW(emu->ewin->window) : NULL),
 		 GTK_DIALOG_DESTROY_WITH_PARENT,
-		 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		 GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+		 _("Cancel"), GTK_RESPONSE_CANCEL,
+		 _("Save"), GTK_RESPONSE_ACCEPT,
 		 NULL);
 	
 	gtk_window_set_resizable(GTK_WINDOW(ssdlg->window), FALSE);

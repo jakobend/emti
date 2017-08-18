@@ -187,7 +187,7 @@ void tilem_preferences_dialog(TilemEmulatorWindow *ewin)
 	dlg = gtk_dialog_new_with_buttons(_("Preferences"),
 	                                  GTK_WINDOW(ewin->window),
 	                                  GTK_DIALOG_MODAL,
-	                                  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+	                                  _("Close"), GTK_RESPONSE_CLOSE,
 	                                  NULL);
 
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);

@@ -206,8 +206,8 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 	dlg = gtk_dialog_new_with_buttons(_("Link Port"),
 	                                  GTK_WINDOW(ewin->window),
 	                                  GTK_DIALOG_MODAL,
-	                                  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                  GTK_STOCK_OK, GTK_RESPONSE_OK,
+	                                  _("Cancel"), GTK_RESPONSE_CANCEL,
+	                                  _("OK"), GTK_RESPONSE_OK,
 	                                  NULL);
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dlg),
 	                                        GTK_RESPONSE_OK,

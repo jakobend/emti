@@ -107,11 +107,11 @@ static gboolean prompt_overwrite(GtkWindow *win, const char *dirname,
 	g_string_free(conflicts, TRUE);
 
 	gtk_dialog_add_button(GTK_DIALOG(dlg),
-	                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	                      _("Cancel"), GTK_RESPONSE_CANCEL);
 
 btn = gtk_button_new_with_mnemonic(_("_Replace"));
 	gtk_button_set_image(GTK_BUTTON(btn),
-	                     gtk_image_new_from_stock(GTK_STOCK_SAVE,
+	                     gtk_image_new_from_stock(_("Save"),
 	                                              GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show(btn);
 	gtk_dialog_add_action_widget(GTK_DIALOG(dlg), btn,
@@ -534,15 +534,15 @@ TilemReceiveDialog* tilem_receive_dialog_new(TilemCalcEmulator *emu)
 	gtk_window_set_title(GTK_WINDOW(rcvdialog->window), _("Receive File"));
 
 	btn = gtk_dialog_add_button(GTK_DIALOG(rcvdialog->window),
-	                            GTK_STOCK_REFRESH, RESPONSE_REFRESH);
+	                            _("Refresh"), RESPONSE_REFRESH);
 
 	if (is_81)
 		gtk_widget_hide(btn);
 
 	gtk_dialog_add_button(GTK_DIALOG(rcvdialog->window),
-	                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	                      _("Cancel"), GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button(GTK_DIALOG(rcvdialog->window),
-	                      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT);
+	                      _("Save"), GTK_RESPONSE_ACCEPT);
 
 	gtk_dialog_set_default_response(GTK_DIALOG(rcvdialog->window),
 	                                GTK_RESPONSE_ACCEPT);

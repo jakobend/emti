@@ -2,7 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011-2012 Benjamin Moody
- * Copyright (c) 2011 Thibault Duponchelle
+ * Copyright (c) 2011-2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -604,13 +604,13 @@ static gboolean prompt_overwrite(const char *fname,
 	g_free(q);
 
 	gtk_dialog_add_button(GTK_DIALOG(dlg),
-	                      GTK_STOCK_CANCEL,
+	                      _("Cancel"),
 	                      GTK_RESPONSE_CANCEL);
 
 	button = gtk_button_new_with_mnemonic(_("_Replace"));
 	gtk_widget_set_can_default(button, TRUE);
 	gtk_button_set_image(GTK_BUTTON(button),
-	                     gtk_image_new_from_stock(GTK_STOCK_SAVE,
+	                     gtk_image_new_from_stock(_("Save"),
 	                                              GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show(button);
 	gtk_dialog_add_action_widget(GTK_DIALOG(dlg), button,
@@ -650,11 +650,11 @@ static char ** run_file_chooser(const char *title,
 	                                      (save
 	                                       ? GTK_FILE_CHOOSER_ACTION_SAVE
 	                                       : GTK_FILE_CHOOSER_ACTION_OPEN),
-	                                      GTK_STOCK_CANCEL,
+	                                      _("Cancel"),
 	                                      GTK_RESPONSE_CANCEL,
 	                                      (save
-	                                       ? GTK_STOCK_SAVE
-	                                       : GTK_STOCK_OPEN),
+	                                       ?_("Save") 
+	                                       : _("Open")),
 	                                      GTK_RESPONSE_ACCEPT,
 	                                      NULL);
 
@@ -735,11 +735,11 @@ static char* run_dir_chooser(const char *title,
 
 	filesel = gtk_file_chooser_dialog_new(title, parent,
 					      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-	                                      GTK_STOCK_CANCEL,
+	                                      _("Cancel"),
 	                                      GTK_RESPONSE_CANCEL,
 	                                      (save
-	                                       ? GTK_STOCK_SAVE
-	                                       : GTK_STOCK_OPEN),
+	                                       ?_("Save") 
+	                                       : _("Open")),
 	                                      GTK_RESPONSE_ACCEPT,
 	                                      NULL);
 

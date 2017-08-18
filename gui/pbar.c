@@ -88,7 +88,7 @@ static void progress_bar_init(TilemLinkProgress* linkpb)
 		parent = NULL;
 
 	pw = gtk_dialog_new_with_buttons("", GTK_WINDOW(parent), 0,
-	                                 GTK_STOCK_CANCEL,
+	                                 _("Cancel"),
 	                                 GTK_RESPONSE_CANCEL,
 	                                 NULL);
 	linkpb->window = pw;

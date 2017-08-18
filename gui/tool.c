@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2011 Thibault Duponchelle 
+ * Copyright (c) 2010-2017 Thibault Duponchelle 
  * Copyright (c) 2010-2012 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -283,8 +283,8 @@ char choose_rom_popup(GtkWidget *parent_window, const char *filename,
 	dlg = gtk_dialog_new_with_buttons(_("Select Calculator Type"),
 	                                  GTK_WINDOW(parent_window),
 	                                  GTK_DIALOG_MODAL,
-	                                  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                  GTK_STOCK_OK, GTK_RESPONSE_OK,
+	                                  _("Cancel"), GTK_RESPONSE_CANCEL,
+	                                  _("OK"), GTK_RESPONSE_OK,
 	                                  NULL);
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dlg),
 	                                        GTK_RESPONSE_OK,

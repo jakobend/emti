@@ -195,8 +195,8 @@ gboolean tilem_prompt_address(TilemDebugger *dbg, GtkWindow *parent,
 	g_return_val_if_fail(dbg->emu->calc != NULL, FALSE);
 
 	dlg = gtk_dialog_new_with_buttons(title, parent, GTK_DIALOG_MODAL,
-	                                  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                  GTK_STOCK_OK, GTK_RESPONSE_OK,
+	                                  _("Cancel"), GTK_RESPONSE_CANCEL,
+	                                  _("OK"), GTK_RESPONSE_OK,
 	                                  NULL);
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dlg),
 	                                        GTK_RESPONSE_OK,
