@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2011 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2012 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -561,11 +561,11 @@ TilemReceiveDialog* tilem_receive_dialog_new(TilemCalcEmulator *emu)
 	/* Allow scrolling the list because we can't know how many vars the calc contains */
 	scroll = new_scrolled_window(rcvdialog->treeview);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(scroll), TRUE, TRUE, 0);
 
-	rcvdialog->mode_box = gtk_hbox_new(FALSE, 6);
+	rcvdialog->mode_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	lbl = gtk_label_new(_("Save as:"));
 	gtk_box_pack_start(GTK_BOX(rcvdialog->mode_box), lbl, FALSE, FALSE, 0);
 

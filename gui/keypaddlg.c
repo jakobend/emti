@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011-2012 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -122,8 +123,8 @@ TilemKeypadDialog *tilem_keypad_dialog_new(TilemDebugger *dbg)
 	                 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
 	tbl1 = gtk_table_new(NGROUPS, NKEYS, TRUE);
-	hbox = gtk_hbox_new(TRUE, 0);
-	vbox = gtk_vbox_new(TRUE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	/* Keypad buttons (labels will be filled in, and buttons
 	   shown/hidden, by tilem_keypad_dialog_calc_changed())

@@ -216,13 +216,13 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 	gtk_dialog_set_default_response(GTK_DIALOG(dlg),
 	                                GTK_RESPONSE_OK);
 
-	vbox = gtk_vbox_new(FALSE, 12);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 
 	none_rb = gtk_radio_button_new_with_mnemonic
 		(NULL, _("_Disconnected"));
 	gtk_box_pack_start(GTK_BOX(vbox), none_rb, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 12);
+	hbox = gtk_box_new(FALSE, 12);
 	audio_rb = gtk_radio_button_new_with_mnemonic_from_widget
 		(GTK_RADIO_BUTTON(none_rb), _("Connected to _speakers"));
 	gtk_box_pack_start(GTK_BOX(hbox), audio_rb, TRUE, TRUE, 0);
@@ -243,7 +243,7 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 		 _("Connected to another _emulator (virtual cable)"));
 	gtk_box_pack_start(GTK_BOX(vbox), virtual_rb, FALSE, FALSE, 0);
 
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	external_rb = gtk_radio_button_new_with_mnemonic_from_widget
 		(GTK_RADIO_BUTTON(none_rb),
@@ -322,7 +322,7 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 			   "(%s) in order to use\n"
 			   "an external link cable."), link);
 
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
 		                                GTK_ICON_SIZE_LARGE_TOOLBAR);
 		gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 6);

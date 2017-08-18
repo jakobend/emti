@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle 
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -204,7 +205,7 @@ gboolean tilem_prompt_address(TilemDebugger *dbg, GtkWindow *parent,
 	gtk_dialog_set_default_response(GTK_DIALOG(dlg),
 	                                GTK_RESPONSE_OK);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 6);
 
 	lbl = gtk_label_new(prompt);

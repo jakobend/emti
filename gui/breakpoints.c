@@ -433,7 +433,7 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 
 	bpdlg.dlg = dlg;
 
-	bpdlg.box = gtk_vbox_new(FALSE, 6);
+	bpdlg.box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(bpdlg.box), 6);
 
 	tbl = gtk_table_new(2, 2, FALSE);
@@ -465,7 +465,7 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 1, 2,
 	                 GTK_FILL, GTK_FILL, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
 	cb = gtk_check_button_new_with_mnemonic(_("_Reading"));
 	gtk_box_pack_start(GTK_BOX(hbox), cb, FALSE, FALSE, 0);
@@ -497,7 +497,7 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	tbl = gtk_table_new(3, 4, FALSE);
 	gtk_table_set_row_spacings(GTK_TABLE(tbl), 6);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
 	rb = gtk_radio_button_new_with_mnemonic(NULL, _("Si_ngle"));
 	gtk_box_pack_start(GTK_BOX(hbox), rb, FALSE, FALSE, 0);
@@ -893,10 +893,10 @@ void tilem_debugger_edit_breakpoints(TilemDebugger *dbg)
 	bpldlg.dlg = dlg;
 	bpldlg.store = store;
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
 	for (l = dbg->breakpoints; l; l = l->next) {
 		gtk_list_store_append(store, &iter);

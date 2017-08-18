@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2011 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2010-2012 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -735,7 +735,7 @@ static GtkWidget *create_registers(TilemDebugger *dbg)
 	GtkWidget *vbox, *tbl, *lbl, *hbox, *ent, *btn;
 	int i;
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	tbl = gtk_table_new(6, 4, FALSE);
 	gtk_table_set_row_spacings(GTK_TABLE(tbl), 6);
@@ -763,7 +763,7 @@ static GtkWidget *create_registers(TilemDebugger *dbg)
 
 	gtk_box_pack_start(GTK_BOX(vbox), tbl, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(TRUE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
 	for (i = 7; i >= 0; i--) {
 		btn = gtk_toggle_button_new_with_label(flag_labels[i]);
@@ -774,7 +774,7 @@ static GtkWidget *create_registers(TilemDebugger *dbg)
 
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
 	for (i = 12; i < 14; i++) {
 		lbl = gtk_label_new(_(reg_labels[i]));
@@ -936,7 +936,7 @@ TilemDebugger *tilem_debugger_new(TilemCalcEmulator *emu)
 	g_signal_connect(dbg->window, "delete-event",
 	                 G_CALLBACK(delete_win), dbg);
 
-	vbox2 = gtk_vbox_new(FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	/* Actions and menu bar */
 
@@ -982,7 +982,7 @@ TilemDebugger *tilem_debugger_new(TilemCalcEmulator *emu)
 
 	g_object_unref(uimgr);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
 	vpaned = gtk_vpaned_new();
 
@@ -1002,7 +1002,7 @@ TilemDebugger *tilem_debugger_new(TilemCalcEmulator *emu)
 
 	gtk_box_pack_start(GTK_BOX(hbox), vpaned, TRUE, TRUE, 0);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	/* Registers */
 

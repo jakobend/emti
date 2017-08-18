@@ -1,7 +1,7 @@
 /*
  * TilEm II
  *
- * Copyright (c) 2010-2011 Thibault Duponchelle
+ * Copyright (c) 2010-2017 Thibault Duponchelle
  * Copyright (c) 2011-2012 Benjamin Moody
  *
  * This program is free software: you can redistribute it and/or
@@ -97,7 +97,7 @@ static void progress_bar_init(TilemLinkProgress* linkpb)
 
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(pw));
 
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 6);
 
 	lbl = gtk_label_new(NULL);

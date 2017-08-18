@@ -2,6 +2,7 @@
  * TilEm II
  *
  * Copyright (c) 2011-2012 Benjamin Moody
+ * Copyright (c) 2017 Thibault Duponchelle
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -189,12 +190,12 @@ void tilem_preferences_dialog(TilemEmulatorWindow *ewin)
 	                                  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 	                                  NULL);
 
-	vbox1 = gtk_vbox_new(FALSE, 12);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 6);
 
 	/* Emulation speed */
 
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	slow_rb = gtk_radio_button_new_with_mnemonic
 		(NULL, _("_Limit to actual calculator speed"));
@@ -215,7 +216,7 @@ void tilem_preferences_dialog(TilemEmulatorWindow *ewin)
 
 	/* Display settings */
 
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	grayscale_cb = gtk_check_button_new_with_mnemonic(_("Emulate _grayscale"));
 	gtk_box_pack_start(GTK_BOX(vbox2), grayscale_cb, FALSE, FALSE, 0);
@@ -238,7 +239,7 @@ void tilem_preferences_dialog(TilemEmulatorWindow *ewin)
 	g_signal_connect(smooth_cb, "toggled",
 	                 G_CALLBACK(smooth_changed), ewin);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
 	skin_cb = gtk_check_button_new_with_mnemonic(_("Use s_kin:"));
 	gtk_box_pack_start(GTK_BOX(hbox), skin_cb, FALSE, FALSE, 0);

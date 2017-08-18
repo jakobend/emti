@@ -293,7 +293,7 @@ char choose_rom_popup(GtkWidget *parent_window, const char *filename,
 	gtk_dialog_set_default_response(GTK_DIALOG(dlg),
 	                                GTK_RESPONSE_OK);
 
-	vbox = gtk_vbox_new(TRUE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	/* create radio buttons */
 

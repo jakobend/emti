@@ -298,7 +298,7 @@ void popup_ask_save(TilemEmulatorWindow* ewin) {
                                       GTK_STOCK_NO, GTK_RESPONSE_REJECT, NULL);
     lbl = gtk_label_new("Save calculator state?");
     vbox = gtk_dialog_get_content_area(GTK_DIALOG(dlg));
-    hbox = gtk_hbox_new(FALSE, 20);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
     chkbtn = gtk_check_button_new();
     g_signal_connect(chkbtn, "toggled",
                      G_CALLBACK(autosave_changed), ewin);
