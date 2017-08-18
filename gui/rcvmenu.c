@@ -109,7 +109,7 @@ static gboolean prompt_overwrite(GtkWindow *win, const char *dirname,
 	gtk_dialog_add_button(GTK_DIALOG(dlg),
 	                      _("Cancel"), GTK_RESPONSE_CANCEL);
 
-btn = gtk_button_new_with_mnemonic(_("_Replace"));
+	btn = gtk_button_new_with_mnemonic(_("_Replace"));
 	gtk_button_set_image(GTK_BUTTON(btn),
 	                     gtk_image_new_from_stock(_("Save"),
 	                                              GTK_ICON_SIZE_BUTTON));
