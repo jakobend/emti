@@ -316,5 +316,17 @@
 * - Add a popup when exit to ask user if he want to save.
 * ---12/11/13---
 * - Add a checkbutton "do not ask again" in the save popup
+* ---16/08/17---
+* - Fix FSF copyright notice in skinops files as reported by TC01.
+* - Apply patch from JK Wood (Slackbuilds tilem2 packager) related to macro and 64bits machines.
+* ---17/08/17---
+* - Fix warnings war_unused_return (defined by libc distribution)
+* - Fix all other warnings. 
+* - Remove deprecated g_cond_new g_thread_new g_mutex_new
+* - Use accessor (prepare gtk3 migration)
+* - Migrate tilem2 to GTK3 !!! Debugger is broken, quick and dirty code for printing lcd, various bug (size request, core dump when leaving)
+* ---18/08/17---
+* - Remove GTK_STOCK deprecated symbols
+* - Remove deprecated gtk_vbox and gtk_hbox to box (could be migrated to grid also...)
 */
 

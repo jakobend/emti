@@ -323,7 +323,7 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 			   "an external link cable."), link);
 
 		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
+		icon = gtk_image_new_from_icon_name("dialog-warning",
 		                                GTK_ICON_SIZE_LARGE_TOOLBAR);
 		gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 6);
 

@@ -111,7 +111,7 @@ static gboolean prompt_overwrite(GtkWindow *win, const char *dirname,
 
 	btn = gtk_button_new_with_mnemonic(_("_Replace"));
 	gtk_button_set_image(GTK_BUTTON(btn),
-	gtk_image_new_from_stock(GTK_STOCK_SAVE, GTK_ICON_SIZE_BUTTON));
+	gtk_image_new_from_icon_name("document-save", GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show(btn);
 	gtk_dialog_add_action_widget(GTK_DIALOG(dlg), btn,
 	                             GTK_RESPONSE_ACCEPT);

@@ -610,7 +610,7 @@ static gboolean prompt_overwrite(const char *fname,
 	button = gtk_button_new_with_mnemonic(_("_Replace"));
 	gtk_widget_set_can_default(button, TRUE);
 	gtk_button_set_image(GTK_BUTTON(button),
-	                     gtk_image_new_from_stock(GTK_STOCK_SAVE,
+	                     gtk_image_new_from_icon_name("document-save",
 	                                              GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show(button);
 	gtk_dialog_add_action_widget(GTK_DIALOG(dlg), button,
