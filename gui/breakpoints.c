@@ -362,7 +362,7 @@ static gboolean entry_key_event(G_GNUC_UNUSED GtkWidget *entry,
 
 static void init_hex_entry(struct breakpoint_dlg *bpdlg,
                            struct hex_entry *he, const char *label,
-                           GtkTable *tbl, int ypos)
+                           GtkGrid *grd, int ypos)
 {
 	GtkWidget *align, *lbl;
 
@@ -371,13 +371,11 @@ static void init_hex_entry(struct breakpoint_dlg *bpdlg,
 	align = gtk_alignment_new(0.5, 0.5, 1.0, 1.0);
 	gtk_alignment_set_padding(GTK_ALIGNMENT(align), 0, 0, 12, 6);
 	gtk_container_add(GTK_CONTAINER(align), lbl);
-	gtk_table_attach(tbl, align, 0, 1, ypos, ypos + 1,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(grd, align, 0, ypos, 1, 1);
 
 	he->addr_entry = gtk_entry_new();
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), he->addr_entry);
-	gtk_table_attach(tbl, he->addr_entry, 1, 2, ypos, ypos + 1,
-	                 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(grd, he->addr_entry, 1, ypos, 1, 1);
 
 	g_signal_connect(he->addr_entry, "changed",
 	                 G_CALLBACK(entry_edited), bpdlg);
@@ -386,14 +384,12 @@ static void init_hex_entry(struct breakpoint_dlg *bpdlg,
 
 	he->page_label = lbl = gtk_label_new(_("Page:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(tbl, lbl, 2, 3, ypos, ypos + 1,
-	                 GTK_FILL, GTK_FILL, 6, 0);
+	gtk_grid_attach(grd, lbl, 2, ypos, 1, 1);
 
 	he->page_entry = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(he->page_entry), 5);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), he->page_entry);
-	gtk_table_attach(tbl, he->page_entry, 3, 4, ypos, ypos + 1,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(grd, he->page_entry, 3, ypos, 1, 1);
 
 	g_signal_connect(he->page_entry, "changed",
 	                 G_CALLBACK(entry_edited), bpdlg);
@@ -408,7 +404,7 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
                                 gboolean edit_existing,
                                 gboolean edit_endaddr)
 {
-	GtkWidget *dlg, *vbox, *frame, *tbl, *hbox, *lbl, *combo, *cb, *rb;
+	GtkWidget *dlg, *vbox, *frame, *grd, *hbox, *lbl, *combo, *cb, *rb;
 	struct breakpoint_dlg bpdlg;
 	gsize i;
 
@@ -436,25 +432,23 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	bpdlg.box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(bpdlg.box), 6);
 
-	tbl = gtk_table_new(2, 2, FALSE);
-	gtk_table_set_row_spacings(GTK_TABLE(tbl), 6);
-	gtk_table_set_col_spacings(GTK_TABLE(tbl), 6);
+	grd = gtk_grid_new();
+	gtk_widget_set_margin_bottom(GTK_WIDGET(grd), 6);
+	gtk_widget_set_margin_right(GTK_WIDGET(grd), 6);
 
 	/* Breakpoint type */
 
 	lbl = gtk_label_new_with_mnemonic(_("Breakpoint _type:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 0, 1,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 0, 1, 1);
 
 	combo = gtk_combo_box_text_new();
 	for (i = 0; i < G_N_ELEMENTS(type_info); i++)
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX(combo), _(type_info[i].desc));
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), _(type_info[i].desc));
 
 	bpdlg.type_combo = combo;
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), combo);
-	gtk_table_attach(GTK_TABLE(tbl), combo, 1, 2, 0, 1,
-	                 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), combo, 1, 0, 1, 1); 
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), bp->type);
 
@@ -462,8 +456,7 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 
 	bpdlg.access_label = lbl = gtk_label_new(_("Break when:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 1, 2,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 1, 1, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
@@ -486,16 +479,15 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bpdlg.access_cb[2]),
 	                             bp->mode & 4);
 
-	gtk_table_attach(GTK_TABLE(tbl), hbox, 1, 2, 1, 2,
-	                 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), hbox, 1, 1, 1, 1);
 
-	frame = new_frame(_("Breakpoint Condition"), tbl);
+	frame = new_frame(_("Breakpoint Condition"), grd);
 	gtk_box_pack_start(GTK_BOX(bpdlg.box), frame, FALSE, FALSE, 0);
 
 	/* Addresses */
 
-	tbl = gtk_table_new(3, 4, FALSE);
-	gtk_table_set_row_spacings(GTK_TABLE(tbl), 6);
+	grd = gtk_grid_new();
+	gtk_widget_set_margin_right(GTK_WIDGET(grd), 6);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
@@ -510,13 +502,12 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	if (edit_existing && bp->end != bp->start)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rb), TRUE);
 
-	gtk_table_attach(GTK_TABLE(tbl), hbox, 0, 2, 0, 1,
-	                 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), hbox, 0, 0, 2, 1);
 
-	init_hex_entry(&bpdlg, &bpdlg.start, _("S_tart:"), GTK_TABLE(tbl), 1);
-	init_hex_entry(&bpdlg, &bpdlg.end, _("_End:"), GTK_TABLE(tbl), 2);
+	init_hex_entry(&bpdlg, &bpdlg.start, _("S_tart:"), GTK_GRID(grd), 1);
+	init_hex_entry(&bpdlg, &bpdlg.end, _("_End:"), GTK_GRID(grd), 2);
 
-	frame = new_frame(_("Address"), tbl);
+	frame = new_frame(_("Address"), grd);
 	bpdlg.address_label = gtk_frame_get_label_widget(GTK_FRAME(frame));
 	gtk_box_pack_start(GTK_BOX(bpdlg.box), frame, FALSE, FALSE, 0);
 	gtk_widget_show_all(bpdlg.box);
@@ -974,7 +965,7 @@ void tilem_debugger_edit_breakpoints(TilemDebugger *dbg)
 
 	/* Buttons */
 
-	bbox = gtk_vbutton_box_new();
+	bbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing(GTK_BOX(bbox), 6);
 
