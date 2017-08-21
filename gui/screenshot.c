@@ -229,7 +229,7 @@ static void set_current_animation(TilemScreenshotDialog *ssdlg,
 {
 	GtkImage *img = GTK_IMAGE(ssdlg->screenshot_preview_image);
 	int width, height, mode;
-	GdkColor fg, bg;
+	GdkRGBA fg, bg;
 	gdouble speed;
 
 	if (anim)
@@ -250,9 +250,9 @@ static void set_current_animation(TilemScreenshotDialog *ssdlg,
 			(GTK_SPIN_BUTTON(ssdlg->height_spin));
 		tilem_animation_set_size(anim, width, height);
 
-		gtk_color_button_get_color
+		gtk_color_button_get_rgba
 			(GTK_COLOR_BUTTON(ssdlg->foreground_color), &fg);
-		gtk_color_button_get_color
+		gtk_color_button_get_rgba
 			(GTK_COLOR_BUTTON(ssdlg->background_color), &bg);
 		tilem_animation_set_colors(anim, &fg, &bg);
 
@@ -744,9 +744,9 @@ static gboolean save_output(TilemScreenshotDialog *ssdlg)
 	width = gdk_pixbuf_animation_get_width(ganim);
 	height = gdk_pixbuf_animation_get_height(ganim);
 
-	gtk_color_button_get_color
+	gtk_color_button_get_rgba
 		(GTK_COLOR_BUTTON(ssdlg->foreground_color), &fg);
-	gtk_color_button_get_color
+	gtk_color_button_get_rgba
 		(GTK_COLOR_BUTTON(ssdlg->background_color), &bg);
 
 	mode = gtk_combo_box_get_active(GTK_COMBO_BOX(ssdlg->dither_mode_combo));

@@ -51,8 +51,8 @@ void tilem_animation_set_size(TilemAnimation *anim, int width, int height);
 
 /* Set output image colors. */
 void tilem_animation_set_colors(TilemAnimation *anim,
-                                const GdkColor *foreground,
-                                const GdkColor *background);
+                                const GdkRGBA *foreground,
+                                const GdkRGBA *background);
 
 /* Set color quantization options for GIF output.  If GRAYSCALE is
    true, use only grayscale.  If RGB_FIXED is true, use only a color

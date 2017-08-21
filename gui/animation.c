@@ -606,8 +606,8 @@ void tilem_animation_set_size(TilemAnimation *anim, int width, int height)
 }
 
 void tilem_animation_set_colors(TilemAnimation *anim,
-                                const GdkColor *foreground,
-                                const GdkColor *background)
+                                const GdkRGBA *foreground,
+                                const GdkRGBA *background)
 {
 	g_return_if_fail(TILEM_IS_ANIMATION(anim));
 	g_return_if_fail(foreground != NULL);
@@ -616,12 +616,19 @@ void tilem_animation_set_colors(TilemAnimation *anim,
 	if (anim->palette)
 		tilem_free(anim->palette);
 
-	anim->palette = tilem_color_palette_new(background->red >> 8,
-	                                        background->green >> 8,
-	                                        background->blue >> 8,
-	                                        foreground->red >> 8,
-	                                        foreground->green >> 8,
-	                                        foreground->blue >> 8,
+	int fgr,fgg,fgb, bgr,bgg,bgb;
+	fgr = (int) (foreground->red * 255);
+	fgg = (int) (foreground->green * 255);
+	fgb = (int) (foreground->blue * 255);
+	bgr = (int) (background->red * 255);
+	bgg = (int) (background->green * 255);
+	bgb = (int) (background->blue * 255);
+	anim->palette = tilem_color_palette_new(bgr,
+						bgg,
+						bgb,
+						fgr,
+						fgg,
+						fgb,
 	                                        GAMMA);
 }
 
