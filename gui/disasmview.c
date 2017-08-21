@@ -550,11 +550,9 @@ static gboolean get_cursor_line(TilemDisasmView *dv, dword *pos,
    we've inserted into the model) */
 static int get_parent_request_height(GtkWidget *w)
 {
-	GtkRequisition* min_req;
-	GtkRequisition* nat_req;
-	//(*GTK_WIDGET_CLASS(parent_class)->size_request)(w, &req);
-	gtk_widget_get_preferred_size(w, min_req, nat_req);
-	return nat_req->height;
+	GtkRequisition min_req, nat_req;
+	gtk_widget_get_preferred_size(w, &min_req, &nat_req);
+	return nat_req.height;
 }
 
 /* Widget is assigned a size and position */
