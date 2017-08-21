@@ -119,7 +119,7 @@ void quick_screenshot(TilemEmulatorWindow *ewin)
 	int grayscale, w96, h96, w128, h128, w320, h320, width, height;
 	TilemAnimation *anim;
 	GError *err = NULL;
-	GdkColor fg, bg;
+	GdkRGBA fg, bg;
 
 	tilem_config_get("screenshot",
 	                 "directory/f", &folder,
@@ -645,7 +645,7 @@ void popup_screenshot_window(TilemEmulatorWindow *ewin)
 {
 	TilemScreenshotDialog *ssdlg;
 	int w96, h96, w128, h128, w320, h320, width, height, grayscale;
-	GdkColor fg, bg;
+	GdkRGBA fg, bg;
 	char *dithermode;
 
 	g_return_if_fail(ewin != NULL);
@@ -715,8 +715,8 @@ void popup_screenshot_window(TilemEmulatorWindow *ewin)
 	set_size_spin_buttons(ssdlg, width, height);
 	size_spin_changed(NULL, ssdlg);
 
-	gtk_color_button_set_color(GTK_COLOR_BUTTON(ssdlg->foreground_color), &fg);
-	gtk_color_button_set_color(GTK_COLOR_BUTTON(ssdlg->background_color), &bg);
+	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(ssdlg->foreground_color), &fg);
+	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(ssdlg->background_color), &bg);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(ssdlg->dither_mode_combo),
 	                         dither_string_to_mode(dithermode));
 
@@ -735,7 +735,7 @@ static gboolean save_output(TilemScreenshotDialog *ssdlg)
 	const char *format_opt, *width_opt, *height_opt;
 	gboolean is_static;
 	int width, height, mode;
-	GdkColor fg, bg;
+	GdkRGBA fg, bg;
 	GError *err = NULL;
 
 	g_return_val_if_fail(anim != NULL, FALSE);
@@ -744,10 +744,10 @@ static gboolean save_output(TilemScreenshotDialog *ssdlg)
 	width = gdk_pixbuf_animation_get_width(ganim);
 	height = gdk_pixbuf_animation_get_height(ganim);
 
-	gtk_color_button_get_rgba
-		(GTK_COLOR_BUTTON(ssdlg->foreground_color), &fg);
-	gtk_color_button_get_rgba
-		(GTK_COLOR_BUTTON(ssdlg->background_color), &bg);
+	gtk_color_chooser_get_rgba
+		(GTK_COLOR_CHOOSER(ssdlg->foreground_color), &fg);
+	gtk_color_chooser_get_rgba
+		(GTK_COLOR_CHOOSER(ssdlg->background_color), &bg);
 
 	mode = gtk_combo_box_get_active(GTK_COMBO_BOX(ssdlg->dither_mode_combo));
 	if (mode < 0)

@@ -180,7 +180,7 @@ void tilem_config_get(const char *group, const char *option, ...)
 	char **strp;
 	int *intp;
 	double *dblp;
-	GdkColor *colorp;
+	GdkRGBA *colorp;
 
 	g_return_if_fail(group != NULL);
 	g_return_if_fail(option != NULL);
@@ -234,11 +234,11 @@ void tilem_config_get(const char *group, const char *option, ...)
 				*intp = g_ascii_strtoll(defvalue, NULL, 10);
 		}
 		else if (type[1] == 'c') {
-			colorp = va_arg(ap, GdkColor *);
+			colorp = va_arg(ap, GdkRGBA *);
 			p = g_key_file_get_string(gkf, group, key, &err);
-			if (p == NULL || !gdk_color_parse(p, colorp)) {
+			if (p == NULL || !gdk_rgba_parse(colorp, p)) {
 				if (defvalue) {
-					gdk_color_parse(defvalue, colorp);
+					gdk_rgba_parse(colorp, defvalue);
 				}
 				else {
 					colorp->red = 0;
@@ -273,7 +273,7 @@ void tilem_config_set(const char *group, const char *option, ...)
 	const char *strv;
 	int intv;
 	double dblv;
-	const GdkColor *colorv;
+	const GdkRGBA *colorv;
 	char *p;
 
 	g_return_if_fail(group != NULL);
@@ -312,11 +312,11 @@ void tilem_config_set(const char *group, const char *option, ...)
 			g_key_file_set_boolean(gkf, group, key, !!intv);
 		}
 		else if (type[1] == 'c') {
-			colorv = va_arg(ap, const GdkColor *);
+			colorv = va_arg(ap, const GdkRGBA *);
 			p = g_strdup_printf("#%02x%02x%02x",
-			                    colorv->red >> 8,
-			                    colorv->green >> 8,
-			                    colorv->blue >> 8);
+			                    (int) (colorv->red * 255),
+			                    (int) (colorv->green * 255),
+			                    (int) (colorv->blue * 255));
 			g_key_file_set_string(gkf, group, key, p);
 			g_free(p);
 		}

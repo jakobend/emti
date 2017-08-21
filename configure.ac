@@ -51,7 +51,7 @@ m4_define(with_flags, [
 
 # GLib and GTK+
 
-PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.2
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.4
                        glib-2.0 >= 2.12.0
                        gthread-2.0)
 
