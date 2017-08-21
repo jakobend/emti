@@ -105,7 +105,7 @@ put_pixel (GdkPixbuf *pixbuf, int x, int y, gboolean pixel_is_on)
 		
 }
 
-static gboolean screen_repaint(GtkWidget *w, GdkEventExpose *ev G_GNUC_UNUSED,
+static gboolean screen_repaint(GtkWidget *w, cairo_t *cr,
                                TilemEmulatorWindow *ewin)
 {
 	GtkAllocation alloc;
@@ -156,9 +156,7 @@ static gboolean screen_repaint(GtkWidget *w, GdkEventExpose *ev G_GNUC_UNUSED,
 	/* Render buffer to the screen */
 
 	win = gtk_widget_get_window(w);
-	cairo_t* cr = gdk_cairo_create(win);
-	//style = gtk_widget_get_style(w);
-	//GdkPixbuf* pixbuf = gdk_pixbuf_new_from_bytes(ewin->lcd_image_buf, GDK_COLORSPACE_RGB, FALSE, 8, alloc.width, alloc.height, alloc.width * 3);
+	
 	GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, alloc.width, alloc.height);
 	int x, y;
 	for(y = 0; y < alloc.height; y++) {
@@ -174,7 +172,6 @@ static gboolean screen_repaint(GtkWidget *w, GdkEventExpose *ev G_GNUC_UNUSED,
 	
 	gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
 	cairo_paint(cr);
-	//cairo_destroy(cr);
 
 	if (drawrgb) {
 		//gdk_cairo_set_source_pixbuf(cr, ewin->lcd_image_buf, 0, 0);
