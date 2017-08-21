@@ -138,7 +138,7 @@ static void driver_changed(GtkComboBoxText *cmb, void *data)
 	if (asdlg->no_update)
 		return;
 
-	if (gtk_combo_box_get_active(cmb) > 0)
+	if (gtk_combo_box_get_active(GTK_COMBO_BOX(cmb)) > 0)
 		opts.driver = gtk_combo_box_text_get_active_text(cmb);
 	else
 		opts.driver = NULL;
@@ -185,7 +185,7 @@ static void latency_changed(GtkSpinButton *sb, void *data)
 void tilem_audio_setup_dialog(TilemEmulatorWindow *ewin)
 {
 	struct audio_setup_dlg asdlg;
-	GtkWidget *dlg, *tbl, *lbl, *vbox, *frame;
+	GtkWidget *dlg, *grd, *lbl, *vbox, *frame;
 	const char * const *drivers;
 	const TilemAudioOptions *opts;
 	int i;
@@ -199,44 +199,39 @@ void tilem_audio_setup_dialog(TilemEmulatorWindow *ewin)
 	                                  _("Close"), GTK_RESPONSE_CLOSE,
 	                                  NULL);
 
-	tbl = gtk_table_new(5, 2, FALSE);
-	gtk_table_set_row_spacings(GTK_TABLE(tbl), 6);
-	gtk_table_set_col_spacings(GTK_TABLE(tbl), 6);
+	grd = gtk_grid_new();
+	gtk_widget_set_margin_bottom(GTK_WIDGET(grd), 6);
+	gtk_widget_set_margin_right(GTK_WIDGET(grd), 6);
 
 	lbl = gtk_label_new_with_mnemonic(_("_Volume:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 0, 1,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 0, 1, 1);
 
-	asdlg.vol_scl = gtk_hscale_new_with_range(MINVOLUME, MAXVOLUME, 1.0);
+	asdlg.vol_scl = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, MINVOLUME, MAXVOLUME, 1.0);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), asdlg.vol_scl);
-	gtk_table_attach(GTK_TABLE(tbl), asdlg.vol_scl, 1, 2, 0, 1,
-	                 GTK_EXPAND|GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), asdlg.vol_scl, 1, 0, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("C_hannels:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 1, 2,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 1, 1, 1);
 
 	asdlg.channels_sb = gtk_spin_button_new_with_range(1.0, 2.0, 1.0);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), asdlg.channels_sb);
-	gtk_table_attach(GTK_TABLE(tbl), asdlg.channels_sb, 1, 2, 1, 2,
-	                 GTK_EXPAND|GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), asdlg.channels_sb, 1, 1, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("_Driver:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 2, 3,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 2, 1, 1);
 
 	asdlg.driver_combo = gtk_combo_box_text_new();
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX(asdlg.driver_combo),
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asdlg.driver_combo),
 	                          _("Automatic"));
 	if (!ewin->emu->audio_options.driver)
 		gtk_combo_box_set_active(GTK_COMBO_BOX(asdlg.driver_combo), 0);
 
 	drivers = tilem_audio_device_list_drivers();
 	for (i = 0; drivers && drivers[i]; i++) {
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX(asdlg.driver_combo),
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asdlg.driver_combo),
 		                          drivers[i]);
 
 		if (ewin->emu->audio_options.driver
@@ -245,31 +240,26 @@ void tilem_audio_setup_dialog(TilemEmulatorWindow *ewin)
 				(GTK_COMBO_BOX(asdlg.driver_combo), i + 1);
 	}
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), asdlg.driver_combo);
-	gtk_table_attach(GTK_TABLE(tbl), asdlg.driver_combo, 1, 2, 2, 3,
-	                 GTK_EXPAND|GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), asdlg.driver_combo, 1, 2, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("Sampling _rate (kHz):"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 3, 4,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 3, 1, 1);
 
 	asdlg.rate_sb = gtk_spin_button_new_with_range(MINRATE, MAXRATE, 1.0);
 	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(asdlg.rate_sb), 3);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), asdlg.rate_sb);
-	gtk_table_attach(GTK_TABLE(tbl), asdlg.rate_sb, 1, 2, 3, 4,
-	                 GTK_EXPAND|GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), asdlg.rate_sb, 1, 3, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("_Latency (ms):"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl, 0, 1, 4, 5,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 4, 1, 1);
 
 	asdlg.latency_sb = gtk_spin_button_new_with_range(1.0, 1000.0, 1.0);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), asdlg.latency_sb);
-	gtk_table_attach(GTK_TABLE(tbl), asdlg.latency_sb, 1, 2, 4, 5,
-	                 GTK_EXPAND|GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), asdlg.latency_sb, 1, 4, 1, 1);
 
-	frame = new_frame(_("Audio Properties"), tbl);
+	frame = new_frame(_("Audio Properties"), grd);
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 6);
 	gtk_widget_show_all(frame);
 
