@@ -250,10 +250,10 @@ static void set_current_animation(TilemScreenshotDialog *ssdlg,
 			(GTK_SPIN_BUTTON(ssdlg->height_spin));
 		tilem_animation_set_size(anim, width, height);
 
-		gtk_color_button_get_rgba
-			(GTK_COLOR_BUTTON(ssdlg->foreground_color), &fg);
-		gtk_color_button_get_rgba
-			(GTK_COLOR_BUTTON(ssdlg->background_color), &bg);
+		gtk_color_chooser_get_rgba
+			(GTK_COLOR_CHOOSER(ssdlg->foreground_color), &fg);
+		gtk_color_chooser_get_rgba
+			(GTK_COLOR_CHOOSER(ssdlg->background_color), &bg);
 		tilem_animation_set_colors(anim, &fg, &bg);
 
 		mode = gtk_combo_box_get_active
@@ -590,7 +590,7 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 
 	ssdlg->dither_mode_combo = gtk_combo_box_text_new();
 	for (i = 0; i < G_N_ELEMENTS(dither_modes); i++)
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX(ssdlg->dither_mode_combo),
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ssdlg->dither_mode_combo),
 		                          _(dither_modes[i].desc));
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->dither_mode_combo);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
