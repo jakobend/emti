@@ -172,8 +172,8 @@ TilemKeypadDialog *tilem_keypad_dialog_new(TilemDebugger *dbg)
 
 	grd2 = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(grd2), 6);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(grd2), 12);
-	gtk_widget_set_margin_right(GTK_WIDGET(grd2), 12);
+	gtk_grid_set_row_spacing(GTK_GRID(grd2), 12);
+	gtk_grid_set_column_spacing(GTK_GRID(grd2), 12);
 
 	lbl = gtk_label_new(NULL);
 	gtk_label_set_markup(GTK_LABEL(lbl), _("<b>Scan Groups</b>"));

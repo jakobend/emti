@@ -433,8 +433,8 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	gtk_container_set_border_width(GTK_CONTAINER(bpdlg.box), 6);
 
 	grd = gtk_grid_new();
-	gtk_widget_set_margin_bottom(GTK_WIDGET(grd), 6);
-	gtk_widget_set_margin_right(GTK_WIDGET(grd), 6);
+	gtk_grid_set_row_spacing(GTK_GRID(grd), 6);
+	gtk_grid_set_column_spacing(GTK_GRID(grd), 6);
 
 	/* Breakpoint type */
 
@@ -487,7 +487,7 @@ static gboolean edit_breakpoint(TilemDebugger *dbg,
 	/* Addresses */
 
 	grd = gtk_grid_new();
-	gtk_widget_set_margin_right(GTK_WIDGET(grd), 6);
+	gtk_grid_set_column_spacing(GTK_GRID(grd), 6);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 

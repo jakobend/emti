@@ -252,8 +252,8 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 
 	lsdlg.grd = gtk_grid_new();
 	gtk_grid_set_column_homogeneous(GTK_GRID(lsdlg.grd), TRUE);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(lsdlg.grd), 6);
-	gtk_widget_set_margin_right(GTK_WIDGET(lsdlg.grd), 6);
+	gtk_grid_set_row_spacing(GTK_GRID(lsdlg.grd), 6);
+	gtk_grid_set_column_spacing(GTK_GRID(lsdlg.grd), 6);
 
 	lbl = gtk_label_new_with_mnemonic(_("Cable _type:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);

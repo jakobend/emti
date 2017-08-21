@@ -200,8 +200,8 @@ void tilem_audio_setup_dialog(TilemEmulatorWindow *ewin)
 	                                  NULL);
 
 	grd = gtk_grid_new();
-	gtk_widget_set_margin_bottom(GTK_WIDGET(grd), 6);
-	gtk_widget_set_margin_right(GTK_WIDGET(grd), 6);
+	gtk_grid_set_row_spacing(GTK_GRID(grd), 6);
+	gtk_grid_set_column_spacing(GTK_GRID(grd), 6);
 
 	lbl = gtk_label_new_with_mnemonic(_("_Volume:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
