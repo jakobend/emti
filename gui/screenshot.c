@@ -420,8 +420,8 @@ static void dither_mode_changed(G_GNUC_UNUSED GtkComboBox *combo,
 static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 {
 	TilemScreenshotDialog *ssdlg = g_slice_new0(TilemScreenshotDialog);
-	GtkWidget *main_table, *vbox, *frame, *config_expander,
-		*tbl, *lbl, *align;
+	GtkWidget *main_grid, *vbox, *frame, *config_expander,
+		*grd, *lbl, *align;
 	GtkCellRenderer *cell;
 	guint i;
 
@@ -451,10 +451,10 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 	g_signal_connect(ssdlg->window, "delete-event",
 	                 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
-	main_table = gtk_table_new(2, 2, FALSE);
-	gtk_table_set_row_spacings(GTK_TABLE(main_table), 6);
-	gtk_table_set_col_spacings(GTK_TABLE(main_table), 12);
-	gtk_container_set_border_width(GTK_CONTAINER(main_table), 6);
+	main_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing(GTK_GRID(main_grid), 6);
+	gtk_grid_set_column_spacing(GTK_GRID(main_grid), 12);
+	gtk_container_set_border_width(GTK_CONTAINER(main_grid), 6);
 
 	/* Preview */
 
@@ -467,12 +467,11 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 	gtk_container_add(GTK_CONTAINER(align), ssdlg->screenshot_preview_image);
 
 	gtk_container_add(GTK_CONTAINER(frame), align);
-	gtk_table_attach(GTK_TABLE(main_table), frame, 0, 1, 0, 1,
-	                 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(main_grid), frame, 0, 0, 1, 1);
 
 	/* Buttons */
 
-	vbox = gtk_vbutton_box_new();
+	vbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(vbox), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing(GTK_BOX(vbox), 6);
 
@@ -486,25 +485,22 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 	gtk_box_pack_start(GTK_BOX(vbox), ssdlg->stop, FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(GTK_WIDGET(ssdlg->stop), FALSE);
 
-	gtk_table_attach(GTK_TABLE(main_table), vbox, 1, 2, 0, 2,
-	                 GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(main_grid), vbox, 1, 0, 1, 2);
 
 	/* Options */
 
 	config_expander = gtk_expander_new(_("Options"));
 
-	tbl = gtk_table_new(7, 2, FALSE);
-	gtk_table_set_row_spacings(GTK_TABLE(tbl), 6);
-	gtk_table_set_col_spacings(GTK_TABLE(tbl), 6);
+	grd = gtk_grid_new();
+	gtk_grid_set_row_spacing(GTK_GRID(grd), 6);
+	gtk_grid_set_column_spacing(GTK_GRID(grd), 6);
 
 	ssdlg->grayscale_tb = gtk_check_button_new_with_mnemonic(_("Gra_yscale"));
-	gtk_table_attach(GTK_TABLE(tbl), ssdlg->grayscale_tb,
-	                 0, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), ssdlg->grayscale_tb, 0, 0, 2, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("Image si_ze:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl,
-	                 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 1, 1, 1);
 
 	ssdlg->ss_size_combo = gtk_combo_box_new();
 	cell = gtk_cell_renderer_text_new();
@@ -513,80 +509,68 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(ssdlg->ss_size_combo),
 	                               cell, "text", COL_TEXT, NULL);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->ss_size_combo);
-	gtk_table_attach(GTK_TABLE(tbl), ssdlg->ss_size_combo,
-	                 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), ssdlg->ss_size_combo, 1, 1, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("_Width:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl,
-	                 0, 1, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 2, 1, 1);
 
 	ssdlg->width_spin = gtk_spin_button_new_with_range(1, 750, 1);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->width_spin);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
 	gtk_container_add(GTK_CONTAINER(align), ssdlg->width_spin);
-	gtk_table_attach(GTK_TABLE(tbl), align,
-	                 1, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), align, 1, 2, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("_Height:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl,
-	                 0, 1, 3, 4, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 3, 1, 1);
 
 	ssdlg->height_spin = gtk_spin_button_new_with_range(1, 500, 1);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->height_spin);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
 	gtk_container_add(GTK_CONTAINER(align), ssdlg->height_spin);
-	gtk_table_attach(GTK_TABLE(tbl), align,
-	                 1, 2, 3, 4, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), align, 1, 3, 1, 1);
 
 
 	lbl = gtk_label_new_with_mnemonic(_("Animation s_peed:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl,
-	                 0, 1, 4, 5, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 4, 1, 1);
 
 	ssdlg->animation_speed = gtk_spin_button_new_with_range(0.1, 100.0, 0.1);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->animation_speed);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ssdlg->animation_speed), 1.0);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
 	gtk_container_add(GTK_CONTAINER(align), ssdlg->animation_speed);
-	gtk_table_attach(GTK_TABLE(tbl), align,
-	               1, 2, 4, 5, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), align, 1, 4, 1, 1);
 
 	/* Foreground color and background color */
 	lbl = gtk_label_new_with_mnemonic(_("_Foreground:"));
 	ssdlg->foreground_label = lbl;
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl,
-	                 0, 1, 5, 6, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 5, 1, 1);
 
 	ssdlg->foreground_color = gtk_color_button_new();
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->foreground_color);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
 	gtk_container_add(GTK_CONTAINER(align), ssdlg->foreground_color);
-	gtk_table_attach(GTK_TABLE(tbl), align,
-	                 1, 2, 5, 6, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), align, 1, 5, 1, 1);
 	
 	lbl = gtk_label_new_with_mnemonic(_("_Background:"));
 	ssdlg->background_label = lbl;
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl,
-	                 0, 1, 6, 7, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 6, 1, 1);
 
 	ssdlg->background_color = gtk_color_button_new();
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->background_color);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
 	gtk_container_add(GTK_CONTAINER(align), ssdlg->background_color);
-	gtk_table_attach(GTK_TABLE(tbl), align,
-	                 1, 2, 6, 7, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), align, 1, 6, 1, 1);
 
 	/* Dithering mode */
 	lbl = gtk_label_new_with_mnemonic(_("GI_F color mode:"));
 	ssdlg->dither_mode_label = lbl;
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(tbl), lbl,
-	                 0, 1, 5, 7, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), lbl, 0, 5, 1, 2);
 
 	ssdlg->dither_mode_combo = gtk_combo_box_text_new();
 	for (i = 0; i < G_N_ELEMENTS(dither_modes); i++)
@@ -595,17 +579,15 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), ssdlg->dither_mode_combo);
 	align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
 	gtk_container_add(GTK_CONTAINER(align), ssdlg->dither_mode_combo);
-	gtk_table_attach(GTK_TABLE(tbl), align,
-	                 1, 2, 5, 7, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd), align, 1, 5, 1, 2);
 
 	align = gtk_alignment_new(0.5, 0.5, 1.0, 1.0);
 	gtk_alignment_set_padding(GTK_ALIGNMENT(align), 0, 0, 12, 0);
-	gtk_container_add(GTK_CONTAINER(align), tbl);
+	gtk_container_add(GTK_CONTAINER(align), grd);
 
 	gtk_container_add(GTK_CONTAINER(config_expander), align);
 
-	gtk_table_attach(GTK_TABLE(main_table), config_expander, 0, 1, 1, 2,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(main_grid), config_expander, 0, 1, 1, 1);
 
 	g_signal_connect(ssdlg->screenshot, "clicked",
 	                 G_CALLBACK(grab_screen), ssdlg);
@@ -634,8 +616,8 @@ static TilemScreenshotDialog * create_screenshot_window(TilemCalcEmulator *emu)
 	                 G_CALLBACK(on_config_expander_activate), ssdlg);
 	*/
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(ssdlg->window));
-	gtk_container_add(GTK_CONTAINER(vbox), main_table);
-	gtk_widget_show_all(main_table);
+	gtk_container_add(GTK_CONTAINER(vbox), main_grid);
+	gtk_widget_show_all(main_grid);
 
 	return ssdlg;
 }
