@@ -54,7 +54,7 @@ struct link_setup_dlg {
 	GtkWidget *audio_setup_btn;
 
 	/* table containing settings for external cable */
-	GtkWidget *tbl;
+	GtkWidget *grd;
 
 	/* port and timeout widgets */
 	GtkWidget *port_lbl;
@@ -87,9 +87,9 @@ static void ext_toggled(GtkToggleButton *tb, gpointer data)
 	/* set external cable options insensitive unless 'external' is
 	   selected */
 	if (gtk_toggle_button_get_active(tb))
-		gtk_widget_set_sensitive(lsdlg->tbl, TRUE);
+		gtk_widget_set_sensitive(lsdlg->grd, TRUE);
 	else
-		gtk_widget_set_sensitive(lsdlg->tbl, FALSE);
+		gtk_widget_set_sensitive(lsdlg->grd, FALSE);
 }
 
 static void ext_type_changed(GtkComboBox *combo, gpointer data)
@@ -250,21 +250,21 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 		 _("Connected to an e_xternal link cable"));
 	gtk_box_pack_start(GTK_BOX(vbox2), external_rb, FALSE, FALSE, 0);
 
-	lsdlg.tbl = gtk_table_new(3, 2, FALSE);
-	gtk_table_set_row_spacings(GTK_TABLE(lsdlg.tbl), 6);
-	gtk_table_set_col_spacings(GTK_TABLE(lsdlg.tbl), 6);
+	lsdlg.grd = gtk_grid_new();
+	gtk_grid_set_column_homogeneous(GTK_GRID(lsdlg.grd), TRUE);
+	gtk_widget_set_margin_bottom(GTK_WIDGET(lsdlg.grd), 6);
+	gtk_widget_set_margin_right(GTK_WIDGET(lsdlg.grd), 6);
 
 	lbl = gtk_label_new_with_mnemonic(_("Cable _type:"));
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(lsdlg.tbl), lbl, 0, 1, 0, 1,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(lsdlg.grd), lbl, 0, 0, 1, 1);
 
 	type_combo = gtk_combo_box_text_new();
 	for (i = j = 0; i < (int) G_N_ELEMENTS(cable_types); i++) {
 		if (!cable_supported(cable_types[i].model))
 			continue;
 
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX(type_combo),
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(type_combo),
 		                          _(cable_types[i].description));
 
 		lsdlg.models[j] = cable_types[i].model;
@@ -273,36 +273,31 @@ void tilem_link_setup_dialog(TilemEmulatorWindow *ewin)
 		j++;
 	}
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), type_combo);
-	gtk_table_attach(GTK_TABLE(lsdlg.tbl), type_combo, 1, 2, 0, 1,
-	                 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(lsdlg.grd), type_combo, 1, 0, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("_Port:"));
 	lsdlg.port_lbl = lbl;
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(lsdlg.tbl), lbl, 0, 1, 1, 2,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(lsdlg.grd), lbl, 0, 1, 1, 1);
 
 	lsdlg.port_sb = gtk_spin_button_new_with_range(1.0, 4.0, 1.0);
 	gtk_entry_set_activates_default(GTK_ENTRY(lsdlg.port_sb), TRUE);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), lsdlg.port_sb);
-	gtk_table_attach(GTK_TABLE(lsdlg.tbl), lsdlg.port_sb, 1, 2, 1, 2,
-	                 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(lsdlg.grd), lsdlg.port_sb, 1, 1, 1, 1);
 
 	lbl = gtk_label_new_with_mnemonic(_("Ti_meout (sec):"));
 	lsdlg.timeout_lbl = lbl;
 	gtk_misc_set_alignment(GTK_MISC(lbl), LABEL_X_ALIGN, 0.5);
-	gtk_table_attach(GTK_TABLE(lsdlg.tbl), lbl, 0, 1, 2, 3,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(lsdlg.grd), lbl, 0, 2, 1, 1);
 
 	lsdlg.timeout_sb = gtk_spin_button_new_with_range(0.1, 60.0, 0.1);
 	gtk_entry_set_activates_default(GTK_ENTRY(lsdlg.timeout_sb), TRUE);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(lbl), lsdlg.timeout_sb);
-	gtk_table_attach(GTK_TABLE(lsdlg.tbl), lsdlg.timeout_sb, 1, 2, 2, 3,
-	                 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(lsdlg.grd), lsdlg.timeout_sb, 1, 2, 1, 1);
 
 	align = gtk_alignment_new(0.5, 0.5, 1.0, 1.0);
 	gtk_alignment_set_padding(GTK_ALIGNMENT(align), 0, 0, 12, 0);
-	gtk_container_add(GTK_CONTAINER(align), lsdlg.tbl);
+	gtk_container_add(GTK_CONTAINER(align), lsdlg.grd);
 	gtk_box_pack_start(GTK_BOX(vbox2), align, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, FALSE, FALSE, 0);
 

@@ -328,5 +328,8 @@
 * ---18/08/17---
 * - Remove GTK_STOCK deprecated symbols
 * - Remove deprecated gtk_vbox and gtk_hbox to box (could be migrated to grid also...)
+* ---21/08/17---
+* - Fix issue with core dump when starting debugger
+* - Remove all GdkColor deprecated stuff
 */
 
