@@ -43,11 +43,7 @@ static const char * const custom_icons[] = {
 void init_custom_icons()
 {
 	GtkIconTheme *theme;
-	GtkIconFactory *factory;
-	GtkIconSet *set;
-	GtkIconSource *source;
 	char *path;
-	gsize i;
 
 	path = get_shared_dir_path("icons", NULL);
 	if (path) {
@@ -55,17 +51,4 @@ void init_custom_icons()
 		gtk_icon_theme_append_search_path(theme, path);
 		g_free(path);
 	}
-
-	factory = gtk_icon_factory_new();
-	for (i = 0; i < G_N_ELEMENTS(custom_icons); i++) {
-		set = gtk_icon_set_new();
-		source = gtk_icon_source_new();
-		gtk_icon_source_set_icon_name(source, custom_icons[i]);
-		gtk_icon_set_add_source(set, source);
-		gtk_icon_source_free(source);
-		gtk_icon_factory_add(factory, custom_icons[i], set);
-		gtk_icon_set_unref(set);
-	}
-	gtk_icon_factory_add_default(factory);
-	g_object_unref(factory);
 }
