@@ -105,7 +105,7 @@ static void key_toggled(GtkToggleButton *btn, gpointer data)
 TilemKeypadDialog *tilem_keypad_dialog_new(TilemDebugger *dbg)
 {
 	TilemKeypadDialog *kpdlg;
-	GtkWidget *tbl1, *tbl2, *hbox, *vbox, *btn, *lbl;
+	GtkWidget *grd1, *grd2, *hbox, *vbox, *btn, *lbl;
 	int i, j;
 	char buf[20];
 
@@ -122,8 +122,10 @@ TilemKeypadDialog *tilem_keypad_dialog_new(TilemDebugger *dbg)
 	g_signal_connect(kpdlg->window, "delete-event",
 	                 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
-	tbl1 = gtk_table_new(NGROUPS, NKEYS, TRUE);
+	grd1 = gtk_grid_new();
+	gtk_grid_set_column_homogeneous(GTK_GRID(grd1), TRUE);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_set_homogeneous(GTK_BOX(hbox), TRUE);
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	/* Keypad buttons (labels will be filled in, and buttons
@@ -138,10 +140,9 @@ TilemKeypadDialog *tilem_keypad_dialog_new(TilemDebugger *dbg)
 		for (j = 0; j < NKEYS; j++) {
 			btn = gtk_toggle_button_new_with_label("");
 			kpdlg->keys[i][j] = btn;
-			gtk_table_attach(GTK_TABLE(tbl1), btn,
-			                 NKEYS - j - 1, NKEYS - j,
-			                 i, i + 1,
-			                 GTK_FILL, GTK_FILL, 2, 2);
+			gtk_grid_attach(GTK_GRID(grd1), btn,
+			                 NKEYS - j - 1, i,
+			                 1, 1);
 
 			g_signal_connect(btn, "toggled",
 			                 G_CALLBACK(key_toggled), kpdlg);
@@ -169,36 +170,30 @@ TilemKeypadDialog *tilem_keypad_dialog_new(TilemDebugger *dbg)
 		gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, TRUE, 2);
 	}
 
-	tbl2 = gtk_table_new(3, 2, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(tbl2), 6);
-	gtk_table_set_row_spacings(GTK_TABLE(tbl2), 12);
-	gtk_table_set_col_spacings(GTK_TABLE(tbl2), 12);
+	grd2 = gtk_grid_new();
+	gtk_container_set_border_width(GTK_CONTAINER(grd2), 6);
+	gtk_widget_set_margin_bottom(GTK_WIDGET(grd2), 12);
+	gtk_widget_set_margin_right(GTK_WIDGET(grd2), 12);
 
 	lbl = gtk_label_new(NULL);
 	gtk_label_set_markup(GTK_LABEL(lbl), _("<b>Scan Groups</b>"));
-	gtk_table_attach(GTK_TABLE(tbl2), lbl, 0, 1, 0, 1,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd2), lbl, 0, 0, 1, 1);
 
 	lbl = gtk_label_new(NULL);
 	gtk_label_set_markup(GTK_LABEL(lbl), _("<b>Keys</b>"));
-	gtk_table_attach(GTK_TABLE(tbl2), lbl, 1, 2, 0, 1,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd2), lbl, 1, 0, 1, 1);
 
 	lbl = gtk_label_new(_("Input Value:"));
-	gtk_table_attach(GTK_TABLE(tbl2), lbl, 0, 1, 2, 3,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd2), lbl, 0, 2, 1, 1);
 
-	gtk_table_attach(GTK_TABLE(tbl2), vbox, 0, 1, 1, 2,
-	                 GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach(GTK_TABLE(tbl2), tbl1, 1, 2, 1, 2,
-	                 GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach(GTK_TABLE(tbl2), hbox, 1, 2, 2, 3,
-	                 GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(grd2), vbox, 0, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(grd2), grd1, 1, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(grd2), hbox, 1, 2, 1, 1);
 
-	gtk_widget_show_all(tbl2);
+	gtk_widget_show_all(grd2);
 
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(kpdlg->window));
-	gtk_box_pack_start(GTK_BOX(vbox), tbl2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), grd2, FALSE, FALSE, 0);
 
 	tilem_keypad_dialog_calc_changed(kpdlg);
 
