@@ -262,7 +262,7 @@ static void prompt_program_slots(TilemCalcEmulator *emu,
 	                                    GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(sw), tv);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 
 	lbl = gtk_label_new(_("Select a slot where each program should be"
