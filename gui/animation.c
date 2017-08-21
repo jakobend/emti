@@ -616,19 +616,12 @@ void tilem_animation_set_colors(TilemAnimation *anim,
 	if (anim->palette)
 		tilem_free(anim->palette);
 
-	int fgr,fgg,fgb, bgr,bgg,bgb;
-	fgr = (int) (foreground->red * 255);
-	fgg = (int) (foreground->green * 255);
-	fgb = (int) (foreground->blue * 255);
-	bgr = (int) (background->red * 255);
-	bgg = (int) (background->green * 255);
-	bgb = (int) (background->blue * 255);
-	anim->palette = tilem_color_palette_new(bgr,
-						bgg,
-						bgb,
-						fgr,
-						fgg,
-						fgb,
+	anim->palette = tilem_color_palette_new((int) (background->red * 255),
+						(int) (background->green * 255),
+						(int) (background->blue * 255),
+						(int) (foreground->red * 255),
+						(int) (foreground->green * 255),
+						(int) (foreground->blue * 255),
 	                                        GAMMA);
 }
 
