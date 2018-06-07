@@ -11,3 +11,7 @@
 [submodule "libarchive"]
 	path = external/libarchive
 	url = https://github.com/libarchive/libarchive.git
+[submodule "external/tilem"]
+	path = external/tilem
+	url = ../emti.git
+	branch = tilem-git
