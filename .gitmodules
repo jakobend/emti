@@ -1,0 +1,13 @@
+[submodule "tiemu"]
+	path = external/tiemu
+	url = https://github.com/abbrev/tiemu.git
+[submodule "tilibs"]
+	path = external/tilibs
+	url = https://github.com/debrouxl/tilibs.git
+[submodule "glib"]
+	path = external/glib
+	url = https://github.com/GNOME/glib.git
+	branch = glib-2-14
+[submodule "libarchive"]
+	path = external/libarchive
+	url = https://github.com/libarchive/libarchive.git

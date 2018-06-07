@@ -1,0 +1,427 @@
+diff --git a/configure b/configure
+deleted file mode 100755
+index 2c69f72f..00000000
+diff --git a/configure.ac b/configure.ac
+index fe264575..209ad37d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -44,8 +44,7 @@ AC_PROG_INSTALL
+ AC_PROG_MAKE_SET
+ AC_PROG_LN_S
+ AC_ISC_POSIX
+-AC_CHECK_PROG(GROFF, groff, yes, no)
+-AM_CONDITIONAL(USE_GROFF, test "$GROFF" != "no")
++AM_CONDITIONAL(USE_GROFF, false)
+ AC_CHECK_TOOL(RC, windres, windres)
+ 
+ # Checks for libraries.
+@@ -73,11 +72,11 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
+ AC_SUBST(GLIB_CFLAGS)
+ AC_SUBST(GLIB_LIBS)
+ 
+-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6.0)
++#PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6.0)
+ AC_SUBST(GTK_CFLAGS)
+ AC_SUBST(GTK_LIBS)
+ 
+-PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.4.0)
++#PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.4.0)
+ AC_SUBST(GLADE_CFLAGS)
+ AC_SUBST(GLADE_LIBS)
+ 
+diff --git a/src/Makefile.in b/src/Makefile.in
+index 5b1f2b03..fac682e2 100644
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -4,15 +4,14 @@
+ CC        = @CC@
+ CPP       = @CPP@
+ CXX       = @CXX@
+-CFLAGS    = @CFLAGS@ @TICONV_CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@ @SDL_CFLAGS@ @INCINTL@
+-LDFLAGS   = @LDFLAGS@ @TICONV_LIBS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @LIBZ@ @SDL_LIBS@ $(extra_ldflags)
+-CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
++CFLAGS    = @CFLAGS@ @TICONV_CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @SDL_CFLAGS@ @INCINTL@
++LDFLAGS   = @LDFLAGS@ @TICONV_LIBS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @LIBZ@ @SDL_LIBS@ $(extra_ldflags)
++CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@
+ MOC       = @MOC@
+ DCOPIDL   = @DCOPIDL@
+ DCOPIDL2CPP = @DCOPIDL2CPP@
+ RC        = @RC@
+ 
+-kde       = @kde@
+ dbus      = @dbus@
+ 
+ #DESTDIR   =
+@@ -25,15 +24,8 @@ else
+ endif
+ endif
+ 
+-ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+-	RESFILE = tiemu-rc.o
+-	LDFLAGS += -lcomdlg32 -lole32 -loleaut32 -luuid -lstdc++
+-	EXEEXT = .exe
+-	win32_OBJ = ipc/com/oleaut.o ipc/com/oleaut_i.o ipc/com/registry.o
+-else
+-	RESFILE =
+-	EXEEXT =
+-endif
++RESFILE =
++LIBEXT = .so
+ 
+ INSTALL         = @INSTALL@
+ INSTALL_PROGRAM = @INSTALL_PROGRAM@
+@@ -47,23 +39,7 @@ sysconfdir      = @sysconfdir@
+ .SUFFIXES: .o .c .cpp .h .m .i .S .rc .res
+ .NOTPARALLEL:
+ 
+-ifeq ($(kde), yes)
+-kdeincludes = @all_includes@
+-kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@ @QT_LDFLAGS@ @X_LDFLAGS@
+-kde_OBJ = kde/kde.o kde/kde-private.o   ipc/dcop/dcop.o ipc/dcop/dcop-private.o ipc/dcop/dcop_skel.o
+-kdeprivsources = kde/kde-private.cpp ipc/dcop/dcop-private.cpp ipc/dcop/dcop.kidl ipc/dcop/dcop_skel.cpp
+-kde/kde-private.cpp: kde/kde-private.h
+-	$(MOC) kde/kde-private.h -o kde/kde-private.cpp
+-ipc/dcop/dcop-private.cpp: ipc/dcop/dcop.h
+-	$(MOC) ipc/dcop/dcop.h -o ipc/dcop/dcop-private.cpp
+-ipc/dcop/dcop.kidl: ipc/dcop/dcop.h
+-	$(DCOPIDL) ipc/dcop/dcop.h > ipc/dcop/dcop.kidl
+-ipc/dcop/dcop_skel.cpp: ipc/dcop/dcop.kidl
+-	$(DCOPIDL2CPP) --no-stub ipc/dcop/dcop.kidl
+-FINALLINKCC = $(CXX)
+-else
+ FINALLINKCC = $(CC)
+-endif
+ 
+ DEFS=@DEFS@ \
+ 	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
+@@ -75,9 +51,8 @@ INCLUDES = \
+ 	-I@top_srcdir@ -I$(includedir) \
+ 	-DPREFIX=\"${prefix}\" -I. \
+ 	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
+-	-I./sound -I./gui -I./gui/calc -I./gui/debugger \
++	-I./sound -I./gui \
+ 	-I./ipc/dcop -I./ipc/dbus -I./ipc/com \
+-	-I./kde \
+ 	-I./misc
+ 
+ ifeq ($(dbus), yes)
+@@ -158,12 +133,6 @@ sound_OBJ = \
+ endif
+ 
+ misc_OBJ = \
+-	misc/cmdline.o 	\
+-	misc/files.o 	\
+-	misc/paths.o 	\
+-	misc/logging.o	\
+-	misc/rcfile.o 	\
+-	misc/screenshot.o \
+ 	misc/tie_error.o 
+ 
+ gui_calc_OBJ = \
+@@ -234,18 +203,15 @@ else
+ libgdb_A = gdb/gdb/libgdb.a
+ endif
+ 
+-tiemu_OBJ = core/uae/newcpu.o \
++libtiemu_OBJ =  core/uae/newcpu.o \
+ 	$(core_uae_OBJ) $(core_uae_xmalloc_OBJ) \
+ 	$(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
+ 	$(core_dbg_OBJ) \
+ 	$(sound_OBJ) \
+-	$(misc_OBJ) \
+-	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(gui_logger_OBJ) \
+-	$(kde_OBJ) $(dbus_OBJ) $(win32_OBJ) \
+-	$(libgdb_A)
++	$(misc_OBJ)
+ 
+ #rules:
+-all: uae gdbtk tiemu$(EXEEXT)
++all: uae gdbtk libtiemu$(LIBEXT)
+ 
+ uae:
+ 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
+@@ -258,43 +224,20 @@ endif
+ 
+ ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+ ifneq (,$(findstring NO_GDB,$(CFLAGS)))
+-tiemu.exe: $(tiemu_OBJ) $(RESFILE)
++libtiemu.dll: $(tiemu_OBJ) $(RESFILE)
+ else
+-tiemu.exe: $(tiemu_OBJ) $(core_gdb_DEP) $(RESFILE)
++libtiemu.dll: $(tiemu_OBJ) $(core_gdb_DEP) $(RESFILE)
+ endif
+ else
+ ifneq (,$(findstring NO_GDB,$(CFLAGS)))
+-tiemu: $(tiemu_OBJ)
++libtiemu.so: $(libtiemu_OBJ)
+ else
+-tiemu: $(tiemu_OBJ) $(core_gdb_DEP)
+-endif
++libtiemu.so: $(libtiemu_OBJ) $(core_gdb_DEP)
+ endif
+-ifneq (,$(findstring NO_GDB,$(CFLAGS)))
+-ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
+-	$(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+-	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
+-	-Wl,--rpath,"$(prefix)/lib"
+-else
+-	../libtool --mode=link $(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
+-	-o tiemu$(EXEEXT) $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+-endif
+-else
+-# Force static linking for TCL-related stuff on OS X.
+-ifneq (,$(findstring __MACOSX__,$(CFLAGS)))
+-	sed <gdb/gdb/libgdb.ldflags >gdb/gdb/libgdb.ldflags.tmp -e 's,-L\([^ ]*\) -l\(tcl[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(tk[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(itcl[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(itk[0-9.]*\),\1/lib\2.a,g'
+-	mv -f gdb/gdb/libgdb.ldflags.tmp gdb/gdb/libgdb.ldflags
+ endif
+-ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
+-	$(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+-    `sed <gdb/gdb/libgdb.ldflags 's,^\.\./,gdb/,;s, \.\./, gdb/,g;s, \./\.\./, gdb/,g'` \
++	$(FINALLINKCC) $(uae_OBJ) $(libtiemu_OBJ) -o libtiemu.so \
+ 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
+ 	-Wl,--rpath,"$(prefix)/lib"
+-else
+-	../libtool --mode=link $(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
+-    `sed <gdb/gdb/libgdb.ldflags 's,^\.\./,gdb/,;s, \.\./, gdb/,g;s, \./\.\./, gdb/,g'` \
+-	-o tiemu$(EXEEXT) $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+-endif
+-endif
+ 
+ .c.o:
+ 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
+@@ -314,7 +257,7 @@ clean:
+ ifeq (,$(findstring NO_GDB,$(CFLAGS)))
+ 	@cd gdb && $(MAKE) -k clean || :
+ endif
+-	@rm -f $(tiemu_OBJ) tiemu tiemu.exe tiemu-rc.o $(kdeprivsources)
++	@rm -f $(tiemu_OBJ) libtiemu$(LIBEXT) tiemu-rc.o $(kdeprivsources)
+ 
+ distclean: clean
+ 	@cd core/uae && $(MAKE) distclean
+@@ -337,13 +280,9 @@ dos2unix:
+ 	lowercase
+ 	uppercase
+ 
+-install: tiemu$(EXEEXT)
+-	@$(INSTALL) -d $(DESTDIR)${prefix}/bin
+-	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
+-ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+-	$(INSTALL) -m755 ipc/com/tiemups.dll $(DESTDIR)${prefix}/bin/
+-	$(INSTALL) -m755 ipc/com/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
+-endif
++install: libtiemu$(LIBEXT)
++	@$(INSTALL) -d $(DESTDIR)${prefix}/lib
++	$(INSTALL) -m755 libtiemu$(LIBEXT) $(DESTDIR)${prefix}/lib/
+ ifeq (,$(findstring NO_GDB,$(CFLAGS)))
+ 	cd gdb/tcl && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
+ 	cd gdb/tk && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
+@@ -352,39 +291,22 @@ ifeq (,$(findstring NO_GDB,$(CFLAGS)))
+ 	cd gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
+ endif
+ 
+-install-without-tcl-tk: tiemu$(EXEEXT)
++install-without-tcl-tk: libtiemu$(LIBEXT)
+ 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+-	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
+-ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+-	$(INSTALL) -m755 ipc/com/tiemups.dll $(DESTDIR)${prefix}/bin/
+-	$(INSTALL) -m755 ipc/com/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
+-endif
++	$(INSTALL) -m755 libtiemu$(LIBEXT) $(DESTDIR)${prefix}/lib/
+ ifeq (,$(findstring NO_GDB,$(CFLAGS)))
+ 	cd gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
+ 	cd gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
+ 	cd gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
+ endif
+ 
+-install-without-tcl-tk-itcl: tiemu$(EXEEXT)
++install-without-tcl-tk-itcl: libtiemu$(LIBEXT)
+ 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+-	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
+-ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+-	$(INSTALL) -m755 ipc/com/tiemups.dll $(DESTDIR)${prefix}/bin/
+-	$(INSTALL) -m755 ipc/com/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
+-endif
++	$(INSTALL) -m755 libtiemu$(LIBEXT) $(DESTDIR)${prefix}/lib/
+ ifeq (,$(findstring NO_GDB,$(CFLAGS)))
+ 	cd gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
+ 	cd gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
+ endif
+ 
+-regsvr:
+-ifeq ($(OSTYPE),msys)
+-	$(DESTDIR)${prefix}/bin/tiemu -RegServer
+-	regsvr32 //s $(DESTDIR)${prefix}/bin/tiemups.dll
+-else
+-	echo "Error: This target is for native MSYS compilations only!"
+-	exit 1
+-endif
+-
+ uninstall:
+-	rm -f ${prefix}/bin/tiemu$(EXEEXT)
++	rm -f ${prefix}/lib/libtiemu$(LIBEXT)
+diff --git a/src/core/dbg/bkpts.c b/src/core/dbg/bkpts.c
+index 971c866c..39050417 100644
+--- a/src/core/dbg/bkpts.c
++++ b/src/core/dbg/bkpts.c
+@@ -6,9 +6,9 @@
+  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+  *  Copyright (c) 2001-2003, Romain Lievin
+  *  Copyright (c) 2003, Julien Blache
+- *  Copyright (c) 2004, Romain Liévin
+- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+- *  Copyright (c) 2007, Romain Liévin
++ *  Copyright (c) 2004, Romain Liï¿½vin
++ *  Copyright (c) 2005, Romain Liï¿½vin, Kevin Kofler
++ *  Copyright (c) 2007, Romain Liï¿½vin
+  *
+  *  This program is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -40,7 +40,6 @@
+ #include "intl.h"
+ #include "ti68k_int.h"
+ #include "ti68k_err.h"
+-#include "dbg_bkpts.h"
+ #include "handles.h"
+ 
+ /* Add */
+@@ -700,18 +699,14 @@ int ti68k_bkpt_add_watchpoint(uint32_t address, uint32_t len, int type)
+   {
+     case hw_write:
+       ti68k_bkpt_add_range(address, address + len - 1, BK_WRITE);
+-      dbgbkpts_refresh_window();
+       return 0;
+     case hw_read:
+       ti68k_bkpt_add_range(address, address + len - 1, BK_READ);
+-      dbgbkpts_refresh_window();
+       return 0;
+     case hw_access:
+       ti68k_bkpt_add_range(address, address + len - 1, BK_READ | BK_WRITE);
+-      dbgbkpts_refresh_window();
+       return 0;
+     default:
+-      dbgbkpts_refresh_window();
+       return 1;
+   }
+ }
+@@ -722,15 +717,12 @@ int ti68k_bkpt_del_watchpoint(uint32_t address, uint32_t len, int type)
+   {
+     case hw_write:
+       ti68k_bkpt_del_range(address, address + len - 1, BK_WRITE);
+-      dbgbkpts_refresh_window();
+       return 0;
+     case hw_read:
+       ti68k_bkpt_del_range(address, address + len - 1, BK_READ);
+-      dbgbkpts_refresh_window();
+       return 0;
+     case hw_access:
+       ti68k_bkpt_del_range(address, address + len - 1, BK_READ | BK_WRITE);
+-      dbgbkpts_refresh_window();
+       return 0;
+     default:
+       return 1;
+diff --git a/src/core/dbg/debug.c b/src/core/dbg/debug.c
+index d7a51754..566e5de8 100644
+--- a/src/core/dbg/debug.c
++++ b/src/core/dbg/debug.c
+@@ -6,8 +6,8 @@
+  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+  *  Copyright (c) 2001-2003, Romain Lievin
+  *  Copyright (c) 2003, Julien Blache
+- *  Copyright (c) 2004, Romain Liévin
+- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
++ *  Copyright (c) 2004, Romain Liï¿½vin
++ *  Copyright (c) 2005, Romain Liï¿½vin, Kevin Kofler
+  *
+  *  This program is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -32,7 +32,6 @@
+ # include <config.h>
+ #endif
+ 
+-#include <gtk/gtk.h>
+ #include <stdio.h>
+ #include <string.h>
+ 
+@@ -148,9 +147,6 @@ int ti68k_step_over_noflush(void)
+ 	while ((next_pc != m68k_getpc()) && !(regs.spcflags & SPCFLAG_BRK))
+ 	{
+ 		hw_m68k_run(1, 0);
+-
+-		// force GUI refresh in order to be able to cancel operation
+-		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+ 	}
+ 
+ 	if(regs.spcflags & SPCFLAG_BRK)
+@@ -219,8 +215,6 @@ int ti68k_debug_skip(uint32_t next_pc)
+ 		if(next_pc - m68k_getpc() > 0x80) 
+ 			break;
+ */
+-		// force GUI refresh in order to be able to cancel operation
+-		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+     } 
+     while ((next_pc != m68k_getpc()) && !(regs.spcflags & SPCFLAG_BRK));
+ 
+diff --git a/src/core/engine.c b/src/core/engine.c
+index e50380ec..718f6e53 100644
+--- a/src/core/engine.c
++++ b/src/core/engine.c
+@@ -6,8 +6,8 @@
+  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+  *  Copyright (c) 2001-2003, Romain Lievin
+  *  Copyright (c) 2003, Julien Blache
+- *  Copyright (c) 2004, Romain Liévin
+- *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
++ *  Copyright (c) 2004, Romain Liï¿½vin
++ *  Copyright (c) 2005-2007, Romain Liï¿½vin, Kevin Kofler
+  *
+  *  This program is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -40,7 +40,6 @@
+ #include "ti68k_int.h"
+ #include "m68k.h"
+ #include "engine.h"
+-#include "dbg_all.h"
+ #include "logging.h"
+ #include "tsource.h"
+ 
+@@ -92,8 +91,6 @@ static gboolean engine_func(gint *data)
+ 	// a bkpt has been encountered ? If yes, stop engine
+ 	if(res)
+ 	{
+-		if (!dbg_on)
+-			gtk_debugger_enter(GPOINTER_TO_INT(res));
+ #ifndef NO_GDB
+ 		sim_exception(bkpts.type ?
+ 		              ((bkpts.type == BK_CAUSE_EXCEPTION || bkpts.type == BK_CAUSE_PROTECT) ? SIGSEGV
+diff --git a/src/misc/tie_error.c b/src/misc/tie_error.c
+index 517477e8..e6259ae9 100644
+--- a/src/misc/tie_error.c
++++ b/src/misc/tie_error.c
+@@ -6,8 +6,8 @@
+  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+  *  Copyright (c) 2001-2003, Romain Lievin
+  *  Copyright (c) 2003, Julien Blache
+- *  Copyright (c) 2004, Romain Liévin
+- *  Copyright (c) 2005, Romain Liévin
++ *  Copyright (c) 2004, Romain Liï¿½vin
++ *  Copyright (c) 2005, Romain Liï¿½vin
+  *
+  *  This program is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -32,7 +32,6 @@
+ 
+ #include "intl.h"
+ #include "logging.h"
+-#include "dboxes.h"
+ #include "ti68k_int.h"
+ 
+ /*
+@@ -72,7 +71,6 @@ int tiemu_err(int err_code, const char *err_str)
+ 	}
+ 
+ 	tiemu_warning("%s", s);
+-	msg_box1(_("Error"), s);
+ 
+ 	//free(s); // Why not ?
+ 	return err_code;

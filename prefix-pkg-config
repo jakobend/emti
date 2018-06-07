@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PREFIX=`dirname "$0"`/build
+export PKG_CONFIG_DIR=
+export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig
+
+exec pkg-config "$@"

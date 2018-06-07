@@ -1,0 +1,213 @@
+diff --git a/Makefile.am b/Makefile.am
+index e129296b8..27984d45b 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -2,7 +2,7 @@
+ 
+ AUTOMAKE_OPTIONS = 1.7
+ 
+-SUBDIRS = . m4macros glib gobject gmodule gthread tests build po docs
++SUBDIRS = . m4macros glib gobject gmodule gthread tests po docs
+ 
+ bin_SCRIPTS = glib-gettextize
+ 
+@@ -55,13 +55,7 @@ BUILT_EXTRA_DIST = 		\
+ 	gtk-doc.make
+ 
+ configexecincludedir = $(libdir)/glib-2.0/include
+-#configexecinclude_DATA = glibconfig.h
+-
+-install-exec-local: glibconfig.h
+-	$(mkinstalldirs) $(DESTDIR)$(configexecincludedir)
+-	file=$(DESTDIR)$(configexecincludedir)/glibconfig.h; \
+-	if test -r $$file && cmp -s glibconfig.h $$file; then :; \
+-	else $(INSTALL_DATA) glibconfig.h $$file; fi
++configexecinclude_DATA = glibconfig.h
+ 
+ uninstall-local:
+ 	rm -f $(DESTDIR)$(configexecincludedir)/glibconfig.h
+@@ -70,8 +64,7 @@ CONFIGURE_DEPENDENCIES = acglib.m4
+ 
+ BUILT_SOURCES = stamp-gc-h #note: not glibconfig.h
+ glibconfig.h: stamp-gc-h
+-	@if test -f glibconfig.h; then :; \
+-	else rm -f stamp-gc-h; $(MAKE) stamp-gc-h; fi
++	@:
+ stamp-gc-h: config.status
+ 	cd $(top_builddir) && $(SHELL) ./config.status glibconfig.h
+ 	echo timestamp > stamp-gc-h
+@@ -83,7 +76,6 @@ $(pkgconfig_DATA): config.status
+ 
+ # install mkinstalldirs for glib-gettextize's benefit
+ gettextdir = $(datadir)/glib-2.0/gettext
+-gettext_SCRIPTS = mkinstalldirs
+ 
+ # build documentation when doing distcheck
+ DISTCHECK_CONFIGURE_FLAGS = --enable-debug --enable-gtk-doc --enable-man
+diff --git a/acglib.m4 b/acglib.m4
+index 530c0af0d..4778bfaff 100644
+--- a/acglib.m4
++++ b/acglib.m4
+@@ -117,7 +117,7 @@ AS_IF([_AC_EVAL_STDERR($ac_compile) &&
+       [$2],
+       [echo "$as_me: failed program was:" >&AS_MESSAGE_LOG_FD
+ cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
+-m4_ifvaln([$3],[$3])dnl])dnl
++m4_ifvaln([$3],[$3])dnl])
+ ac_compile="$glib_ac_compile_save"
+ rm -f conftest.$ac_objext conftest.err m4_ifval([$1], [conftest.$ac_ext])[]dnl
+ ])# GLIB_CHECK_COMPILE_WARNINGS
+diff --git a/configure.in b/configure.in
+index 5d0523458..8d1412e05 100644
+--- a/configure.in
++++ b/configure.in
+@@ -2043,93 +2043,8 @@ dnl *** g_atomic_* tests for gcc ***
+ dnl ********************************
+ 
+ AC_MSG_CHECKING([whether to use assembler code for atomic operations])
+-
+-if test x"$GCC" = xyes; then
+-  case $host_cpu in
+-    i386)
+-      AC_MSG_RESULT([none])
+-      glib_memory_barrier_needed=no
+-      ;;
+-    i?86)
+-      AC_MSG_RESULT([i486])
+-      AC_DEFINE_UNQUOTED(G_ATOMIC_I486, 1,
+-		   	 [i486 atomic implementation])
+-      glib_memory_barrier_needed=no
+-      ;;
+-    sparc*)
+-      SPARCV9_WARNING="Try to rerun configure with CFLAGS='-mcpu=v9',
+-		when you are using a sparc with v9 instruction set (most
+-		sparcs nowadays). This will make the code for atomic
+-		operations much faster.	The resulting code will not run
+-		on very old sparcs though."
+-
+-      AC_LINK_IFELSE([[
+-        main () 
+-        {
+-	  int tmp1, tmp2, tmp3;
+-          __asm__ __volatile__("casx [%2], %0, %1" 
+-	                       : "=&r" (tmp1), "=&r" (tmp2) : "r" (&tmp3));
+-        }]],
+-	AC_MSG_RESULT([sparcv9])
+-        AC_DEFINE_UNQUOTED(G_ATOMIC_SPARCV9, 1,
+-		   	   [sparcv9 atomic implementation]),
+-	AC_MSG_RESULT([no])
+-        AC_MSG_WARN([[$SPARCV9_WARNING]]))
+-      glib_memory_barrier_needed=yes
+-      ;;
+-    alpha*)
+-      AC_MSG_RESULT([alpha])
+-      AC_DEFINE_UNQUOTED(G_ATOMIC_ALPHA, 1,
+-		   	 [alpha atomic implementation])
+-      glib_memory_barrier_needed=yes
+-      ;;
+-    x86_64)
+-      AC_MSG_RESULT([x86_64])
+-      AC_DEFINE_UNQUOTED(G_ATOMIC_X86_64, 1,
+-		   	 [x86_64 atomic implementation])
+-      glib_memory_barrier_needed=no
+-     ;;
+-    powerpc*)
+-      AC_MSG_RESULT([powerpc])
+-      AC_DEFINE_UNQUOTED(G_ATOMIC_POWERPC, 1,
+-		   	 [powerpc atomic implementation])
+-      glib_memory_barrier_needed=yes
+-      AC_MSG_CHECKING([whether asm supports numbered local labels])
+-      AC_TRY_COMPILE(
+-		,[ 
+-			__asm__ __volatile__ ("1:       nop\n"
+-					      "         bne-    1b")
+-		],[
+-			AC_DEFINE_UNQUOTED(ASM_NUMERIC_LABELS, 1, [define if asm blocks can use numeric local labels])
+-			AC_MSG_RESULT([yes])
+-		],[
+-			AC_MSG_RESULT([no])
+-		])
+-      ;;	
+-    ia64)
+-      AC_MSG_RESULT([ia64])
+-      AC_DEFINE_UNQUOTED(G_ATOMIC_IA64, 1,
+-		   	 [ia64 atomic implementation])
+-      glib_memory_barrier_needed=yes
+-      ;;	
+-    s390|s390x)
+-      AC_MSG_RESULT([s390])
+-      AC_DEFINE_UNQUOTED(G_ATOMIC_S390, 1,
+-		   	 [s390 atomic implementation])
+-      glib_memory_barrier_needed=no
+-      ;;	
+-    arm*)
+-      AC_MSG_RESULT([arm])
+-      AC_DEFINE_UNQUOTED(G_ATOMIC_ARM, 1,
+-                         [arm atomic implementation])
+-      glib_memory_barrier_needed=no
+-      ;;
+-    *)
+-      AC_MSG_RESULT([none])
+-      glib_memory_barrier_needed=yes
+-      ;;
+-  esac
+-fi
++AC_MSG_RESULT([none])
++glib_memory_barrier_needed=yes
+ 
+ dnl ****************************************
+ dnl *** GLib POLL* compatibility defines ***
+@@ -2306,8 +2221,13 @@ fi
+ dnl **************************
+ dnl *** Checks for gtk-doc ***
+ dnl **************************
+-
++# gtkdocize greps for ^GTK_DOC_CHECK and parses it, so you need to have
++# it on it's own line.
++m4_ifdef([GTK_DOC_CHECK], [
+ GTK_DOC_CHECK([1.4])
++],[
++AM_CONDITIONAL([ENABLE_GTK_DOC],[false])
++])
+ 
+ AC_ARG_ENABLE(man,
+               [AC_HELP_STRING([--enable-man],
+@@ -2977,10 +2897,6 @@ gobject-2.0-uninstalled.pc
+ glib-zip
+ glib-gettextize
+ Makefile
+-build/Makefile
+-build/win32/Makefile
+-build/win32/dirent/Makefile
+-build/win32/vs8/Makefile
+ glib/Makefile
+ glib/libcharset/Makefile
+ glib/gnulib/Makefile
+diff --git a/docs/Makefile.am b/docs/Makefile.am
+index c44793630..47a24729e 100644
+--- a/docs/Makefile.am
++++ b/docs/Makefile.am
+@@ -1,6 +1,8 @@
+ ## Process this file with automake to produce Makefile.in
+ 
++if ENABLE_GTK_DOC
+ SUBDIRS = reference
++endif
+ 
+ EXTRA_DIST = debugging.txt macros.txt
+ 
+diff --git a/m4macros/glib-gettext.m4 b/m4macros/glib-gettext.m4
+index e5e0ac059..940ac7222 100644
+--- a/m4macros/glib-gettext.m4
++++ b/m4macros/glib-gettext.m4
+@@ -36,8 +36,8 @@ dnl We go to great lengths to make sure that aclocal won't
+ dnl try to pull in the installed version of these macros
+ dnl when running aclocal in the glib directory.
+ dnl
+-m4_copy([AC_DEFUN],[glib_DEFUN])
+-m4_copy([AC_REQUIRE],[glib_REQUIRE])
++m4_copy_force([AC_DEFUN],[glib_DEFUN])
++m4_copy_force([AC_REQUIRE],[glib_REQUIRE])
+ dnl
+ dnl At the end, if we're not within glib, we'll define the public
+ dnl definitions in terms of our private definitions.
